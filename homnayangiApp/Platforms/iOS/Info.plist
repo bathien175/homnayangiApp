@@ -28,5 +28,13 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSAllowsArbitraryLoads</key>
+    <true/>
+	<key>NSCameraUsageDescription</key>
+    <string>Ứng dụng cần truy cập vào máy ảnh để chụp hình.</string>
+	 <key>NSPhotoLibraryUsageDescription</key>
+    <string>Ứng dụng cần truy cập vào ảnh để lưu trữ.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Ứng dụng cần truy cập vào ảnh để thêm ảnh vào thư viện.</string>
 </dict>
 </plist>

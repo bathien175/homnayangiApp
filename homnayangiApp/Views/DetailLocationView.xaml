@@ -18,6 +18,7 @@
         <custom:ConvertImageSource x:Key="ImageConvert" />
         <custom:ConvertTime x:Key="TimeConvert" />
         <custom:BooleanInverseConverter x:Key="BoolConvert" />
+        <custom:ConvertHidePhone x:Key="ShowPhoneConvert" />
     </ContentPage.Resources>
     <Grid>
         <ScrollView >
@@ -56,46 +57,31 @@
                             <blur:BlurEffect Mode="Dark" AccentColor="Black" AccentOpacity=".4"/>
                         </Border.Effects>
                     </Border>
-                    <Grid HeightRequest="40"
-                          WidthRequest="40"
-                          VerticalOptions="Start"
-                          HorizontalOptions="End"
-                          Margin="10">
-                        <Border StrokeShape="RoundRectangle 50"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                IsVisible="{Binding IsSave}">
-                            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}, Color=Red, Size=20}"
-                                    WidthRequest="40"
-                                    HeightRequest="40"
-                                    BackgroundColor="Transparent"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"/>
-                            <Border.Effects>
-                                <blur:BlurEffect Mode="Dark" AccentColor="Black" AccentOpacity=".4"/>
-                            </Border.Effects>
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                IsVisible="{Binding IsSave, Converter={StaticResource BoolConvert}}">
-                            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}, Color=White, Size=20}"
-                                    WidthRequest="40"
-                                    HeightRequest="40"
-                                    BackgroundColor="Transparent"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"/>
-                            <Border.Effects>
-                                <blur:BlurEffect Mode="Dark" AccentColor="Black" AccentOpacity=".4"/>
-                            </Border.Effects>
-                        </Border>
-                    </Grid>
+                    <Frame WidthRequest="40" 
+                           HeightRequest="40" 
+                           BackgroundColor="#27166C" 
+                           CornerRadius="40" 
+                           Padding="5"
+                           VerticalOptions="Start"
+                           HorizontalOptions="End"
+                           Margin="10"
+                           IsVisible="{Binding LocationCurr.IsUserCreate, Converter={StaticResource BoolConvert}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LocationCurr.SaveCommand}" />
+                        </Frame.GestureRecognizers>
+                        <Grid>
+                            <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}, Color=Red, Size=20}"
+                                   IsVisible="{Binding LocationCurr.IsSave}"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"/>
+                            <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}, Color=White, Size=20}"
+                                   IsVisible="{Binding LocationCurr.IsSave, Converter={StaticResource BoolConvert}}"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"/>
+                        </Grid>
+                    </Frame>
                 </Grid>
-                <Label Text="{Binding NameLocation}"
+                <Label Text="{Binding LocationCurr.LocationCurrent.Name}"
                        FontSize="20"
                        FontAttributes="Bold" 
                        HorizontalTextAlignment="Start"
@@ -111,11 +97,37 @@
                                WidthRequest="20"
                                VerticalOptions="Center"
                                HorizontalOptions="Center"/>
-                    <Label  Grid.Column="1"
-                            FontSize="10"
-                            TextColor="Gray"
-                            Text="{Binding Address}"/>
+                    <Label  Grid.Column="1">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding LocationCurr.LocationCurrent.Address}" FontSize="10" TextColor="Gray" />
+                                <Span Text=", " FontSize="10" TextColor="Gray" />
+                                <Span Text="{Binding LocationCurr.LocationCurrent.District}" FontSize="10" TextColor="Gray" />
+                                <Span Text=", " FontSize="10" TextColor="Gray" />
+                                <Span Text="{Binding LocationCurr.LocationCurrent.Province}" FontSize="10" TextColor="Gray" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
                 </Grid>
+
+                <Grid Margin="10,10,10,0" IsVisible="{Binding LocationCurr.LocationCurrent.HotLine, Converter={StaticResource ShowPhoneConvert}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Phone}, Color={StaticResource Primary}, Size=20}"
+                               HeightRequest="15"
+                               WidthRequest="15"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+                    <Label  Grid.Column="1"
+                            Text="{Binding LocationCurr.LocationCurrent.HotLine}"
+                            FontSize="12"
+                            TextColor="Gray"
+                            TextDecorations="Underline">
+                    </Label>
+                </Grid>
+                
                 <Grid Margin="10,10,10,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="120"/>
@@ -135,9 +147,9 @@
                                TextColor="Black">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="{Binding OpenTime}" />
+                                    <Span Text="{Binding LocationCurr.LocationCurrent.OpenTime, Converter={StaticResource TimeConvert}}" />
                                     <Span Text=" / " />
-                                    <Span Text="{Binding CloseTime}" />
+                                    <Span Text="{Binding LocationCurr.LocationCurrent.CloseTime, Converter={StaticResource TimeConvert}}" />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
@@ -156,9 +168,9 @@
                         <Label Grid.Column="1">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="{Binding MinPrice, Converter={StaticResource MoneyConvert}}" TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                    <Span Text="{Binding LocationCurr.LocationCurrent.MinPrice, Converter={StaticResource MoneyConvert}}" TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
                                     <Span Text=" - " TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
-                                    <Span Text="{Binding MaxPrice, Converter={StaticResource MoneyConvert}}" TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                    <Span Text="{Binding LocationCurr.LocationCurrent.MaxPrice, Converter={StaticResource MoneyConvert}}" TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
@@ -239,9 +251,16 @@
                                    WidthRequest="20"
                                    VerticalOptions="Center"
                                    HorizontalOptions="Center"/>
-                            <Label  Grid.Column="1"
-                                    FontSize="10" TextColor="Gray"
-                                    Text="{Binding Address}">
+                            <Label  Grid.Column="1">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding LocationCurr.LocationCurrent.Address}" FontSize="10" TextColor="Gray" />
+                                        <Span Text=", " FontSize="10" TextColor="Gray" />
+                                        <Span Text="{Binding LocationCurr.LocationCurrent.District}" FontSize="10" TextColor="Gray" />
+                                        <Span Text=", " FontSize="10" TextColor="Gray" />
+                                        <Span Text="{Binding LocationCurr.LocationCurrent.Province}" FontSize="10" TextColor="Gray" />
+                                    </FormattedString>
+                                </Label.FormattedText>
                             </Label>
                         </Grid>
                     </StackLayout>

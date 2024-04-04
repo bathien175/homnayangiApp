@@ -14,15 +14,14 @@ namespace homnayangiApp.ViewModels
         private Timer timer;
         private int currentIndex = 0;
         private bool isLoading = false;
-        private bool isSave = false;
-        private string nameLocation = string.Empty;
-        private Models.Location locationCurr = new Models.Location();
-        private long minPrice;
-        private long maxPrice;
-        private string openTime = string.Empty;
-        private string closeTime = string.Empty;
-        private bool isOpen24H = false;
-        private string phone = string.Empty;
+        //private string nameLocation = string.Empty;
+        private Models.LocationItem locationCurr = new Models.LocationItem();
+        //private long minPrice;
+        //private long maxPrice;
+        //private string openTime = string.Empty;
+        //private string closeTime = string.Empty;
+        //private bool isOpen24H = false;
+        //private string phone = string.Empty;
         private string address = string.Empty;
         private string type = string.Empty;
 
@@ -31,20 +30,19 @@ namespace homnayangiApp.ViewModels
         public int CurrentIndex { get => currentIndex; set => SetProperty(ref currentIndex, value); }
         public ObservableCollection<string> ListTags { get => listTags; set => SetProperty(ref listTags, value); }
         public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
-        public bool IsSave { get => isSave; set => SetProperty(ref isSave, value); }
-        public string NameLocation { get => nameLocation; set => SetProperty(ref nameLocation, value); }
-        public Models.Location LocationCurr { get => locationCurr; set
+        //public string NameLocation { get => nameLocation; set => SetProperty(ref nameLocation, value); }
+        public Models.LocationItem LocationCurr { get => locationCurr; set
             {
                 SetProperty(ref locationCurr, value);
                 loadData();
             }
         }
-        public long MinPrice { get => minPrice; set => SetProperty(ref minPrice, value); }
-        public long MaxPrice { get => maxPrice; set => SetProperty(ref maxPrice, value); }
-        public string OpenTime { get => openTime; set => SetProperty(ref openTime, value); }
-        public string CloseTime { get => closeTime; set => SetProperty(ref closeTime, value); }
-        public bool IsOpen24H { get => isOpen24H; set => SetProperty(ref isOpen24H, value); }
-        public string Phone { get => phone; set => SetProperty(ref phone, value); }
+        //public long MinPrice { get => minPrice; set => SetProperty(ref minPrice, value); }
+        //public long MaxPrice { get => maxPrice; set => SetProperty(ref maxPrice, value); }
+        //public string OpenTime { get => openTime; set => SetProperty(ref openTime, value); }
+        //public string CloseTime { get => closeTime; set => SetProperty(ref closeTime, value); }
+        //public bool IsOpen24H { get => isOpen24H; set => SetProperty(ref isOpen24H, value); }
+        //public string Phone { get => phone; set => SetProperty(ref phone, value); }
         public string Address { get => address; set => SetProperty(ref address, value); }
         public string Type { get => type; set => SetProperty(ref type, value); }
 
@@ -66,11 +64,11 @@ namespace homnayangiApp.ViewModels
             IsLoading = true;
             await Task.Run(() =>
             {
-                NameLocation = LocationCurr.Name;
-                Address = $"{LocationCurr.Address}, {LocationCurr.District}, {LocationCurr.Province}";
-                if (LocationCurr.Creator != null)
+                //NameLocation = LocationCurr.LocationCurrent.Name;
+                Address = $"{LocationCurr.LocationCurrent.Address}, {LocationCurr.LocationCurrent.District}, {LocationCurr.LocationCurrent.Province}";
+                if (LocationCurr.LocationCurrent.Creator != null)
                 {
-                    if (LocationCurr.Creator == dataLogin.Instance.currUser.Id)
+                    if (LocationCurr.LocationCurrent.Creator == dataLogin.Instance.currUser.Id)
                     {
                         Type = "Địa điểm tự tạo";
                     }
@@ -84,34 +82,26 @@ namespace homnayangiApp.ViewModels
                     Type = "Địa điểm có sẵn";
                 }
 
-                if (dataLogin.Instance.currUser.SaveStore != null)
-                {
-                    if (dataLogin.Instance.currUser.SaveStore.Where(x => x == LocationCurr.Id).FirstOrDefault() != null)
-                    {
-                        IsSave = true;
-                    }
-                }
-
-                if (LocationCurr.IsOpen24H == true)
-                {
-                    OpenTime = "24";
-                    CloseTime = "24";
-                }
-                else
-                {
-                    OpenTime = LocationCurr.OpenTime.Value.ToString(@"hh\:mm");
-                    CloseTime = LocationCurr.CloseTime.Value.ToString(@"hh\:mm");
-                }
-                MinPrice = LocationCurr.MinPrice;
-                MaxPrice = LocationCurr.MaxPrice;
-                Phone = LocationCurr.HotLine;
-                if (LocationCurr.Images == null)
+                //if (LocationCurr.LocationCurrent.IsOpen24H == true)
+                //{
+                //    OpenTime = "24";
+                //    CloseTime = "24";
+                //}
+                //else
+                //{
+                //    OpenTime = LocationCurr.LocationCurrent.OpenTime.Value.ToString(@"hh\:mm");
+                //    CloseTime = LocationCurr.LocationCurrent.CloseTime.Value.ToString(@"hh\:mm");
+                //}
+                //MinPrice = LocationCurr.LocationCurrent.MinPrice;
+                //MaxPrice = LocationCurr.LocationCurrent.MaxPrice;
+                //Phone = LocationCurr.LocationCurrent.HotLine;
+                if (LocationCurr.LocationCurrent.Images == null)
                 {
                     ListImages.Add(null);
                 }
                 else
                 {
-                    ListImages = new ObservableCollection<string?>(LocationCurr.Images);
+                    ListImages = new ObservableCollection<string?>(LocationCurr.LocationCurrent.Images);
                 }
                 if (ListImages.Count > 1)
                 {
@@ -120,7 +110,7 @@ namespace homnayangiApp.ViewModels
                     timer.Tick += (s, e) => DoSomething();
                     timer.Start();
                 }
-                ListTags = new ObservableCollection<string>(LocationCurr.Tags);
+                ListTags = new ObservableCollection<string>(LocationCurr.LocationCurrent.Tags);
                 IsLoading = false;
             });
         }

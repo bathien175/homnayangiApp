@@ -11,10 +11,14 @@
              Title="Tài khoản"
              Background="White"
              xmlns:custom ="clr-namespace:homnayangiApp.CustomControls"
-             Appearing="ContentPage_Appearing">
+             Appearing="ContentPage_Appearing"
+             IsBusy="{Binding IsLoading}">
     <ContentPage.BindingContext>
         <viewmodel:AccountManagerViewModel />
     </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <custom:ConvertImageSource x:Key="ImageConvert" />
+    </ContentPage.Resources>
     <ScrollView Orientation="Vertical">
         <StackLayout>
             <Grid HeightRequest="150">
@@ -72,7 +76,7 @@
                     <Border.Shadow>
                         <Shadow Brush="{StaticResource Primary}" />
                     </Border.Shadow>
-                    <Image Source="{Binding ImageUser}" 
+                    <Image Source="{Binding ImagestringUser, Converter={StaticResource ImageConvert}}" 
                             Aspect="AspectFill"
                             HeightRequest="80"
                             WidthRequest="80"

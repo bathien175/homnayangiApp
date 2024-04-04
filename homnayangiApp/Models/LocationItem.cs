@@ -23,8 +23,8 @@ namespace homnayangiApp.Models
         public Location LocationCurrent { get => _locationCurrent;
             set
             { 
-                SetProperty(ref _locationCurrent, value); 
-                if(value.Creator != null)
+                SetProperty(ref _locationCurrent, value);
+                if (value.Creator != null && value.Creator == dataLogin.Instance.currUser.Id)
                 {
                     IsUserCreate = true;
                 }
@@ -48,7 +48,7 @@ namespace homnayangiApp.Models
         private async void executeGotoDetailCMD()
         {
             var vm = new DetailLocationViewModel();
-            vm.LocationCurr = LocationCurrent;
+            vm.LocationCurr = this;
             await Shell.Current.Navigation.PushAsync(new DetailLocationView() { BindingContext = vm});
         }
 

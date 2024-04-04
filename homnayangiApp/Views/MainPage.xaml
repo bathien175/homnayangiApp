@@ -154,7 +154,8 @@
                         </Label.GestureRecognizers>
                     </Label>
                 </Grid>
-                <CollectionView ItemsSource="{Binding ListLocationNear}" Grid.Row="1">
+                <CollectionView ItemsSource="{Binding ListLocationNear}" 
+                                Grid.Row="1">
                     <CollectionView.EmptyView>
                         <StackLayout Orientation="Vertical"
                                          Margin="0,0,20,0">
@@ -178,6 +179,9 @@
                                        Margin="0,0,10,0"
                                        CornerRadius="10"
                                        HasShadow="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding gotoDetail}" />
+                                </Frame.GestureRecognizers>
                                 <Grid Margin="-20">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
@@ -366,6 +370,9 @@
                                        Margin="0,0,10,0"
                                        CornerRadius="10"
                                        HasShadow="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding gotoDetail}" />
+                                </Frame.GestureRecognizers>
                                 <Grid Margin="-20">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
@@ -542,6 +549,9 @@
                                        Margin="0,0,20,0"
                                        CornerRadius="10"
                                        HasShadow="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding gotoDetail}" />
+                                </Frame.GestureRecognizers>
                                 <Grid Margin="-20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="100"/>

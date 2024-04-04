@@ -78,11 +78,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiIcon Include="Resources\AppIcon\appicon.svg" />
+	  <MauiIcon Include="Resources\AppIcon\appicon.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </MauiIcon>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiSplashScreen Include="Resources\Splash\splash.svg" BaseSize="120,120" Color="FFFFFF" />
+	  <MauiSplashScreen Include="Resources\Splash\splash.svg" BaseSize="128,128" Color="#FFFFFF" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -14,6 +14,6 @@ public partial class PersonalView : ContentPage
     private void ContentPage_Appearing(object sender, EventArgs e)
     {
 		var vm = (AccountManagerViewModel)BindingContext;
-		vm.CurentUser = dataLogin.Instance.currUser;
-    }
+		vm.loadImage();
+	}
 }

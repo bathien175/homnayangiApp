@@ -29,4 +29,9 @@ public partial class AccountManagerView : ContentPage
         }
     }
 
+    private void ContentPage_Appearing(object sender, EventArgs e)
+    {
+        //var vm = (ViewModels.AccountManagerViewModel)BindingContext;
+        //vm.loadImage();
+    }
 }

@@ -8,10 +8,16 @@
              xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
              xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
              xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
-             NavigationPage.HasNavigationBar="False">
+             xmlns:custom="clr-namespace:homnayangiApp.CustomControls"
+             NavigationPage.HasNavigationBar="False"
+             Appearing="ContentPage_Appearing"
+             IsBusy="{Binding IsLoading}">
     <ContentPage.BindingContext>
         <viewmodel:AccountManagerViewModel />
     </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <custom:ConvertImageSource x:Key="ImageConvert" />
+    </ContentPage.Resources>
     <ScrollView Orientation="Vertical">
         <VerticalStackLayout Padding="10">
             <Grid>
@@ -26,7 +32,7 @@
                         BackgroundColor="Transparent"
                         HorizontalOptions="Start"
                         VerticalOptions="Center"
-                        Command="{Binding BackPageCMD}"/>
+                        Command="{Binding InfoBackPageCMD}"/>
             </Grid>
             <Grid HeightRequest="150">
                 <Border HeightRequest="100"
@@ -35,7 +41,7 @@
                     StrokeThickness="3"
                     VerticalOptions="Center"
                     WidthRequest="100">
-                    <Image Source="{Binding ImageUser}" 
+                    <Image Source="{Binding ImagestringUser, Converter={StaticResource ImageConvert}}" 
                         Aspect="AspectFill"
                         HeightRequest="100"
                         WidthRequest="100"

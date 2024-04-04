@@ -23,7 +23,6 @@ namespace homnayangiApp.ViewModels
     {
         private string textError = string.Empty;
         private readonly IUserService _userService;
-        private ImageSource _imageUser;
         private string? _imagestringUser;
         private User curentUser = new User();
         private string nameUser = string.Empty;
@@ -42,6 +41,8 @@ namespace homnayangiApp.ViewModels
         private string errornewPass = string.Empty;
         private string errorRePass = string.Empty;
         private ObservableCollection<string> tagSelect = new ObservableCollection<string>();
+        private bool isLoading = false;
+        private List<String> listGender = new List<string>();
 
         public List<string> ListTag { get => listTag; set => SetProperty(ref listTag, value); }
         public ObservableCollection<string> TagSelect { get => tagSelect;
@@ -50,12 +51,12 @@ namespace homnayangiApp.ViewModels
                 SetProperty(ref tagSelect, value);
             }
         }
-        public List<String> ListGender { get; }
         public DelegateCommand logOutCMD { get; }
         public DelegateCommand gotoSettingCMD { get; }
         public DelegateCommand gotoInformationCMD { get; }
         public DelegateCommand gotoChangePasswordCMD { get; }
         public DelegateCommand BackPageCMD { get; }
+        public DelegateCommand InfoBackPageCMD { get; }
         public DelegateCommand TakePic { get; }
         public DelegateCommand ChoosePic { get; }
         public DelegateCommand ResetPic { get; }
@@ -64,20 +65,11 @@ namespace homnayangiApp.ViewModels
         public AccountManagerViewModel()
         {
             _userService = new UserService();
-            CurentUser = dataLogin.Instance.currUser;
-            loadTag();
-            TagSelect =new ObservableCollection<string>(CurentUser.Tags);
-            ListGender = new List<string> { "Nam", "Nữ", "Khác" };
-            NameUser = CurentUser.Name;
-            GenderUser = CurentUser.Gender;
-            CultureInfo provider = CultureInfo.InvariantCulture;
-            DateTime result = DateTime.ParseExact(CurentUser.DateBirth, "dd-MM-yyyy", provider);
-            DatebirthUser = result;
-            CitySelect = ListCity.IndexOf(ListCity.Where(x => x.province_name == CurentUser.City).First());
-            DistrictUser = CurentUser.Dictrict;
+            loadDta();
             logOutCMD = new DelegateCommand(executeLogoutCMD);
             gotoSettingCMD = new DelegateCommand(executeSettingsCMD);
             BackPageCMD = new DelegateCommand(executeBackPageCMD);
+            InfoBackPageCMD = new DelegateCommand(executeInfoBackPageCMD);
             TakePic = new DelegateCommand(executeTakePicCMD);
             ChoosePic = new DelegateCommand(executeChoosePicCMD);
             ResetPic = new DelegateCommand(executeResetPicCMD);
@@ -87,9 +79,29 @@ namespace homnayangiApp.ViewModels
             gotoInformationCMD = new DelegateCommand(executegotoInformationCMD);
         }
 
+
+        private async void loadDta()
+        {
+            IsLoading = true;
+            await Task.Run(() =>
+            {
+                CurentUser = dataLogin.Instance.currUser;
+                loadTag();
+                TagSelect = new ObservableCollection<string>(CurentUser.Tags);
+                ListGender = new List<string> { "Nam", "Nữ", "Khác" };
+                NameUser = CurentUser.Name;
+                GenderUser = CurentUser.Gender;
+                CultureInfo provider = CultureInfo.InvariantCulture;
+                DateTime result = DateTime.ParseExact(CurentUser.DateBirth, "dd-MM-yyyy", provider);
+                DatebirthUser = result;
+                CitySelect = ListCity.IndexOf(ListCity.Where(x => x.province_name == CurentUser.City).First());
+                DistrictUser = CurentUser.Dictrict;
+                IsLoading = false;
+            });
+        }
         private async void executegotoInformationCMD()
         {
-            await Application.Current.MainPage.Navigation.PushAsync(new AccountManagerView());
+            await Application.Current.MainPage.Navigation.PushModalAsync(new AccountManagerView());
         }
 
         private async void executeChangePassCMD()
@@ -111,21 +123,24 @@ namespace homnayangiApp.ViewModels
 
         private async void executeGotoChangePassCMD()
         {
-            await Application.Current.MainPage.Navigation.PushAsync(new ChangePasswordView());
+            await Shell.Current.Navigation.PushAsync(new ChangePasswordView());
         }
 
-        private void loadTag()
+        private async void loadTag()
         {
-            ListTag.Clear();
-            ITagsService _tags = new TagsService();
-            var a = _tags.Get();
-            if (a.Count > 0)
+            await Task.Run(() =>
             {
-                foreach (var item in a)
+                ListTag.Clear();
+                ITagsService _tags = new TagsService();
+                var a = _tags.Get();
+                if (a.Count > 0)
                 {
-                    ListTag.Add(item.Name);
+                    foreach (var item in a)
+                    {
+                        ListTag.Add(item.Name);
+                    }
                 }
-            }
+            });
         }
 
         private async void executeUpdateInfoCMD()
@@ -173,15 +188,10 @@ namespace homnayangiApp.ViewModels
             if (CurentUser.ImageData != null)
             {
                 ImagestringUser = CurentUser.ImageData;
-                MemoryStream stream = new MemoryStream(Convert.FromBase64String(curentUser.ImageData));
-                ImageSource image = ImageSource.FromStream(() => stream);
-                ImageUser = image;
             }
             else
             {
-                string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Images", "noimage.png");
                 ImagestringUser = null;
-                ImageUser = ImageSource.FromFile(imagePath);
             }
         }
 
@@ -213,11 +223,6 @@ namespace homnayangiApp.ViewModels
                 var img = string.Format($"data:{imageformat};base64" + convertedImage);
                 ImagestringUser = convertedImage;
 
-                //converting from base64string to image
-                var imgt = Convert.FromBase64String(convertedImage);
-                MemoryStream stream2 = new(imgt);
-                ImageSource image = ImageSource.FromStream(() => stream2);
-                ImageUser = image;
             }
         }
 
@@ -248,11 +253,6 @@ namespace homnayangiApp.ViewModels
                     var convertedImage = Convert.ToBase64String(imageByte);
                     var img = string.Format("data:image/png;base64" + convertedImage);
                     ImagestringUser = convertedImage;
-                    //converting from base64string to image
-                    var imgt = Convert.FromBase64String(convertedImage);
-                    MemoryStream stream2 = new(imgt);
-                    ImageSource image = ImageSource.FromStream(() => stream2);
-                    ImageUser = image;
                 }
             }
             catch (Exception ex)
@@ -263,12 +263,15 @@ namespace homnayangiApp.ViewModels
 
         private async void executeBackPageCMD()
         {
-            await Application.Current.MainPage.Navigation.PopAsync();
+            await Shell.Current.Navigation.PopAsync(true);
         }
-
+        private async void executeInfoBackPageCMD()
+        {
+            await Application.Current.MainPage.Navigation.PopModalAsync(true);
+        }
         private async void executeSettingsCMD()
         {
-            await Application.Current.MainPage.Navigation.PushModalAsync(new SettingView());
+            await Shell.Current.Navigation.PushModalAsync(new SettingView());
         }
 
         private async void executeLogoutCMD()
@@ -314,18 +317,13 @@ namespace homnayangiApp.ViewModels
         }
         public void loadImage()
         {
-            if (curentUser.ImageData != null)
+            if (CurentUser.ImageData != null)
             {
-                ImagestringUser = curentUser.ImageData;
-                MemoryStream stream = new MemoryStream(Convert.FromBase64String(curentUser.ImageData));
-                ImageSource image = ImageSource.FromStream(() => stream);
-                ImageUser = image;
+                ImagestringUser = CurentUser.ImageData;
             }
             else
             {
                 ImagestringUser = null;
-                string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Images", "noimage.png");
-                ImageUser = ImageSource.FromFile(imagePath);
             }
         }
         void checkNewPass(string pass)
@@ -383,7 +381,6 @@ namespace homnayangiApp.ViewModels
             }
         }
 
-        public ImageSource ImageUser { get => _imageUser; set => SetProperty(ref _imageUser, value); }
         public User CurentUser { get => curentUser; 
             set 
             { 
@@ -431,5 +428,7 @@ namespace homnayangiApp.ViewModels
         public string ErroroldPass { get => erroroldPass; set => SetProperty(ref erroroldPass, value); }
         public string ErrornewPass { get => errornewPass; set => SetProperty(ref errornewPass, value); }
         public string ErrorRePass { get => errorRePass; set => SetProperty(ref errorRePass, value); }
+        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
+        public List<string> ListGender { get => listGender; set => SetProperty(ref listGender, value); }
     }
 }
