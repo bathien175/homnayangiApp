@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.DetailLocationView"
+             Title="Chi tiết địa điểm"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
+             xmlns:custom="clr-namespace:homnayangiApp.CustomControls"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:blur="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             IsBusy="{Binding IsLoading}">
+    <ContentPage.BindingContext>
+        <viewmodel:DetailLocationViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <custom:ConvertMoney x:Key="MoneyConvert" />
+        <custom:ConvertImageSource x:Key="ImageConvert" />
+        <custom:ConvertTime x:Key="TimeConvert" />
+        <custom:BooleanInverseConverter x:Key="BoolConvert" />
+    </ContentPage.Resources>
+    <Grid>
+        <ScrollView >
+            <StackLayout>
+                <Grid HeightRequest="250">
+                    <CarouselView ItemsSource="{Binding ListImages}" 
+                                  HorizontalOptions="FillAndExpand" 
+                                  VerticalOptions="FillAndExpand"
+                                  IsScrollAnimated="True"
+                                  IsSwipeEnabled="True"
+                                  Position="{Binding CurrentIndex}"
+                                  Loop="true" IsBounceEnabled="True">
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding ., Converter={StaticResource ImageConvert}}" Aspect="AspectFill"/>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                        <CarouselView.IndicatorView>
+                            <IndicatorView IndicatorColor="White" IndicatorSize="5" IndicatorsShape="Circle" />
+                        </CarouselView.IndicatorView>
+                    </CarouselView>
+                    <Border StrokeShape="RoundRectangle 50"
+                            HeightRequest="40"
+                            WidthRequest="40"
+                            VerticalOptions="Start"
+                            HorizontalOptions="Start"
+                            Margin="10">
+                        <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.ArrowLeft}, Color=White, Size=20}"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                BackgroundColor="Transparent"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Command="{Binding BackPage}"/>
+                        <Border.Effects>
+                            <blur:BlurEffect Mode="Dark" AccentColor="Black" AccentOpacity=".4"/>
+                        </Border.Effects>
+                    </Border>
+                    <Grid HeightRequest="40"
+                          WidthRequest="40"
+                          VerticalOptions="Start"
+                          HorizontalOptions="End"
+                          Margin="10">
+                        <Border StrokeShape="RoundRectangle 50"
+                                HeightRequest="40"
+                                WidthRequest="40"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding IsSave}">
+                            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}, Color=Red, Size=20}"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    BackgroundColor="Transparent"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+                            <Border.Effects>
+                                <blur:BlurEffect Mode="Dark" AccentColor="Black" AccentOpacity=".4"/>
+                            </Border.Effects>
+                        </Border>
+                        <Border StrokeShape="RoundRectangle 50"
+                                HeightRequest="40"
+                                WidthRequest="40"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding IsSave, Converter={StaticResource BoolConvert}}">
+                            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}, Color=White, Size=20}"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    BackgroundColor="Transparent"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+                            <Border.Effects>
+                                <blur:BlurEffect Mode="Dark" AccentColor="Black" AccentOpacity=".4"/>
+                            </Border.Effects>
+                        </Border>
+                    </Grid>
+                </Grid>
+                <Label Text="{Binding NameLocation}"
+                       FontSize="20"
+                       FontAttributes="Bold" 
+                       HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Start"
+                       Margin="10,10,10,0"/>
+                <Grid Margin="10,10,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.LocationDot}, Color={StaticResource Primary}, Size=20}"
+                               HeightRequest="20"
+                               WidthRequest="20"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+                    <Label  Grid.Column="1"
+                            FontSize="10"
+                            TextColor="Gray"
+                            Text="{Binding Address}"/>
+                </Grid>
+                <Grid Margin="10,10,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Clock}, Color=Black, Size=10}"
+                               HeightRequest="20"
+                               WidthRequest="20"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               TextColor="Black">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding OpenTime}" />
+                                    <Span Text=" / " />
+                                    <Span Text="{Binding CloseTime}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </Grid>
+
+                    <Grid Grid.Column="1" HorizontalOptions="End">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.DollarSign}, Color=Black, Size=10}"
+                               HeightRequest="20"
+                               WidthRequest="20"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+                        <Label Grid.Column="1">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding MinPrice, Converter={StaticResource MoneyConvert}}" TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                    <Span Text=" - " TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                    <Span Text="{Binding MaxPrice, Converter={StaticResource MoneyConvert}}" TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </Grid>
+                </Grid>
+                <Label FontSize="14"
+                       Margin="10,20,10,0"
+                       TextColor="Black">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Loại địa điểm: " FontAttributes="Italic"/>
+                            <Span Text="{Binding Type}" FontAttributes="Bold"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Frame Margin="10,10,10,0"
+                       Padding="7"
+                       HorizontalOptions="Start"
+                       WidthRequest="130"
+                       BackgroundColor="#B7D8F9"
+                       BorderColor="#B7D8F9">
+                    <Label Text="Tags địa điểm:" 
+                           FontFamily="OpenSansSemibold"
+                           FontAttributes="Italic"
+                           TextDecorations="Underline"
+                           FontSize="14"
+                           TextColor="Black"/>
+                </Frame>
+                <Frame Margin="10,-7,10,0"
+                       Padding="10"
+                       HorizontalOptions="Start"
+                       BackgroundColor="#B7D8F9"
+                       BorderColor="#B7D8F9">
+                    <CollectionView ItemsSource="{Binding ListTags}"
+                            ItemsLayout="VerticalGrid,5">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Label >
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="#" TextColor="Black" />
+                                            <Span Text="{Binding }" TextColor="Black" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Frame>
+
+                <Label FontSize="14"
+                       FontAttributes="Bold"
+                       Text="Địa điểm (Xem chi tiết)"
+                       Margin="10,20,10,0"
+                       TextColor="Black"/>
+                <Frame BackgroundColor="White"
+                       Padding="10"
+                       Margin="10,10,10,20"
+                       CornerRadius="10"
+                       HeightRequest="150"
+                       HasShadow="True"
+                       BorderColor="White">
+                    <StackLayout>
+                        <Frame CornerRadius="10" 
+                               HeightRequest="100"
+                               Padding="0">
+                            <Image HeightRequest="100"
+                                   Source="backgroundgps.jpg" 
+                                   Aspect="AspectFill"/>
+                        </Frame>
+                        <Grid Margin="-5,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.LocationDot}, Color={StaticResource Primary}, Size=20}"
+                                   HeightRequest="20"
+                                   WidthRequest="20"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"/>
+                            <Label  Grid.Column="1"
+                                    FontSize="10" TextColor="Gray"
+                                    Text="{Binding Address}">
+                            </Label>
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+
+                <Grid Margin="10,0,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label FontSize="14"
+                           HorizontalTextAlignment="Start"
+                           FontAttributes="Bold"
+                           Text="Đánh giá"
+                           TextColor="Black"/>
+                    <Label FontSize="14"
+                           Grid.Column="1"
+                           HorizontalTextAlignment="End"
+                           FontAttributes="Bold"
+                           TextDecorations="Underline"
+                           Text="Xem chi tiết"
+                           TextColor="Blue"/>
+                </Grid>
+                <Frame BackgroundColor="White"
+                       Padding="10"
+                       Margin="10,10,10,100"
+                       CornerRadius="10"
+                       HeightRequest="200"
+                       HasShadow="True"
+                       BorderColor="White">
+                    <StackLayout>
+                        <Image HeightRequest="150"
+                               Source="isbuilding.png" />
+                        <Label VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"
+                               Text="Tính năng đang phát triển"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="Gray"/>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+        </ScrollView>
+        <Grid BackgroundColor="White"
+              HeightRequest="70"
+              VerticalOptions="End">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border StrokeShape="RoundRectangle 150"
+                    HeightRequest="50"
+                    WidthRequest="50"
+                    Stroke="{StaticResource Primary}"
+                    Grid.Column="0"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center">
+                <Image HeightRequest="25"
+                       WidthRequest="25"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Message}, Color={StaticResource Primary}, Size=20}"/>
+            </Border>
+            <Button StyleClass="FilledButton"
+                    Margin="0,0,10,0"
+                    CornerRadius="50"
+                    HeightRequest="50"
+                    Text="Đánh giá"
+                    TextTransform="Uppercase"
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    BackgroundColor="{StaticResource Primary}"/>
+        </Grid>
+    </Grid>
+</ContentPage>

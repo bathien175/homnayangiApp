@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.SignInStep3View"
+             Title="Thông tin cá nhân"
+             xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:custom ="clr-namespace:homnayangiApp.CustomControls"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+            <GradientStop Color="{StaticResource Primary}" Offset="0"/>
+            <GradientStop Color="{StaticResource PrimaryDark}" Offset="1"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <Grid Margin="40,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Button StyleClass="TextButton"
+                Grid.Row="1"
+                Grid.Column="0"
+                VerticalOptions="Center"
+                HorizontalOptions="Start"
+                TextColor="White"
+                Text="Về trước"
+                FontSize="Medium"
+                Command="{Binding BackStepCmd}"/>
+        <Button StyleClass="TextButton"
+                Grid.Row="1"
+                Grid.Column="1"
+                VerticalOptions="Center"
+                HorizontalOptions="End"
+                TextColor="White"
+                Text="Kế tiếp"
+                FontSize="Medium"
+                Command="{Binding GoStep4Cmd}"/>
+        <StackLayout Grid.Row="0" Spacing="30"
+                     Margin="0,20,0,0"
+                     Grid.ColumnSpan="2">
+            <Label Text="Thông tin cá nhân"
+                   HorizontalOptions="Center"
+                   TextColor="White"
+                   FontSize="Large"
+                   FontAttributes="Bold"/>
+            <uranium:PickerField Title="Chọn giới tính"
+                                 Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Transgender}, Color=White}"
+                                 BorderColor="{StaticResource White}"
+                                 TextColor="{StaticResource White}"
+                                 AccentColor="#4FF5F6"
+                                 TitleColor="White"
+                                 AllowClear="False"
+                                 FontSize="18"
+                                 ItemsSource="{Binding listGender}"
+                                 SelectedItem="{Binding GenderSelect}"
+                                 />
+            <uranium:DatePickerField Title="Chọn ngày sinh "
+                                     Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CalendarDay}, Color=White}"
+                                     BorderColor="{StaticResource White}"
+                                     TextColor="{StaticResource White}"
+                                     Date="{Binding Datebirth}"
+                                     AccentColor="#4FF5F6"
+                                     TitleColor="White"
+                                     AllowClear="False"
+                                     FontSize="18" Format="dd-MM-yyyy"/>
+            <uranium:PickerField Title="Thành phố sinh sống"
+                                 Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.City}, Color=White}"
+                                 BorderColor="{StaticResource White}"
+                                 TextColor="{StaticResource White}"
+                                 AccentColor="{StaticResource Primary}"
+                                 TitleColor="White"
+                                 AllowClear="False"
+                                 FontSize="18"
+                                 ItemsSource="{Binding ListCity}"
+                                 SelectedIndex="{Binding City}"
+                                 ItemDisplayBinding="{Binding province_name}"
+                                 SelectedValueChanged="PickerField_SelectedValueChanged"/>
+            <uranium:PickerField Title="Quận, huyện"
+                                 Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.ArrowRightToCity}, Color=White}"
+                                 BorderColor="{StaticResource White}"
+                                 TextColor="{StaticResource White}"
+                                 AccentColor="{StaticResource Primary}"
+                                 TitleColor="White"
+                                 AllowClear="False"
+                                 FontSize="18"
+                                 ItemsSource="{Binding ListDistrict}"
+                                 SelectedItem="{Binding DistrictSelect}"/>
+        </StackLayout>
+    </Grid>
+</ContentPage>

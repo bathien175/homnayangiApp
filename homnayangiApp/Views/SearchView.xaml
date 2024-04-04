@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.SearchView"
+             Title="Tìm kiếm"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
+             xmlns:custom="clr-namespace:homnayangiApp.CustomControls"
+             Background="White">
+    <ScrollView Orientation="Vertical">
+        <StackLayout Padding="10">
+            <Grid HeightRequest="50">
+                <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CircleArrowLeft},Color=Gray}"
+                    WidthRequest="50"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"/>
+                <Label Text="Tìm kiếm"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       FontSize="18"/>
+                <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Filter},Color=Gray}"
+                    WidthRequest="50"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"/>
+            </Grid>
+            <SearchBar VerticalOptions="Center"
+                        TextColor="Black"
+                        FontSize="16"
+                        Margin="0,20,0,0" 
+                        Placeholder="Tìm kiếm gì đó..." 
+                        CancelButtonColor="Red" />
+            <Label Text="Tìm kiếm gần đây"
+                   FontAttributes="Bold"
+                   Margin="10,20,0,10"
+                   FontSize="Medium"
+                   TextColor="Black"
+                   HorizontalTextAlignment="Start"
+                   VerticalTextAlignment="Start"/>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="homnayangiApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:homnayangiApp"
+    xmlns:view="clr-namespace:homnayangiApp.Views"
+    xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+    xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.NavBarIsVisible="False"
+    >
+    <FlyoutItem Title="Trang chủ" 
+                FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" 
+            Title="Trang chủ"
+            Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.House}}"/>
+        <ShellContent 
+            ContentTemplate="{DataTemplate view:SearchView}"
+            Route="SearchView" 
+            Title="Tìm kiếm"
+            Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.MagnifyingGlass}}"/>
+        <ShellContent
+            ContentTemplate="{DataTemplate view:StoreSaveView}"
+            Route="SaveView" 
+            Title="Đã lưu"
+            Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}}"/>
+        <ShellContent
+            ContentTemplate="{DataTemplate view:MessagesView}"
+            Route="MessagesView" 
+            Title="Tin nhắn"
+            Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Message}}"/>
+        <ShellContent
+            ContentTemplate="{DataTemplate view:PersonalView}"
+            Route="SignInView" 
+            Title="Tài khoản"
+            Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.User}}"/>
+    </FlyoutItem>
+</Shell>

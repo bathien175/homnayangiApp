@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.LoginView"
+             Title="Đăng nhập"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
+             xmlns:busyIndicator="http://schemas.syncfusion.com/maui"
+             NavigationPage.HasNavigationBar="False"
+             IsBusy="{Binding IsLoading}">
+    <ContentPage.BindingContext>
+        <viewmodel:AccountViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+            <GradientStop Color="{StaticResource Primary}" Offset="0"/>
+            <GradientStop Color="{StaticResource PrimaryDark}" Offset="0.5"/>
+            <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <Grid Margin="40,20" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="250"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <StackLayout Grid.Row="0" 
+                     VerticalOptions="Center">
+            <Image Source="/Images/logo192.png" 
+                   HeightRequest="100"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"/>
+            <Label Text="Xin chào!" 
+                   TextColor="White" 
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   FontFamily="Times New Roman"/>
+            <Label Text="Đăng nhập để tiếp tục" TextColor="White" 
+                   Margin="0,10,0,0"
+                   HorizontalOptions="Center"
+                   FontFamily="Times New Roman" FontSize="Medium"/>
+        </StackLayout>
+        <StackLayout Grid.Row="1" Spacing="10">
+            <uranium:TextField BorderColor="White"
+                               VerticalOptions="Center"
+                               TextColor="White"
+                               Title="Số điện thoại"
+                               TitleColor="{StaticResource Secondary}"
+                               TitleFontSize="16"
+                               MaxLength="12"
+                               AccentColor="{StaticResource Secondary}"
+                               FontSize="16"
+                               AllowClear="True"
+                               Text="{Binding PhoneLogin}"
+                               Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Phone}}">
+            </uranium:TextField>
+            <uranium:TextField BorderColor="White" IsPassword="True"
+                               VerticalOptions="Center"
+                               TextColor="White"
+                               Title="Mật khẩu "
+                               TitleColor="{StaticResource Secondary}"
+                               TitleFontSize="16"
+                               AccentColor="{StaticResource Secondary}"
+                               FontSize="16"
+                               AllowClear="True"
+                               Text="{Binding PassLogin}"
+                               Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Lock}}">
+                <uranium:TextField.Attachments>
+                    <uranium:TextFieldPasswordShowHideAttachment />
+                </uranium:TextField.Attachments>
+            </uranium:TextField>
+            <Grid HeightRequest="40" Margin="0,-10,0,-10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Label Text="Quên mật khẩu?" 
+                       TextColor="{StaticResource Primary}"
+                       FontSize="Small"
+                       Grid.Column="1"
+                       HorizontalOptions="End"
+                       TextDecorations="Underline"
+                       Margin="0,10,0,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GotoForgotCmd}" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <uranium:CheckBox Text="Ghi nhớ" LabelPosition="After" 
+                                  BoxSizeRequest="15"
+                                  TextFontSize="16"
+                                  IsChecked="{Binding IsRemember}"/>
+            </Grid>
+            <Button StyleClass="FilledButton"
+                    HeightRequest="50"
+                    Text="Đăng nhập"
+                    TextTransform="Uppercase"
+                    FontAttributes="Bold"
+                    BackgroundColor="{StaticResource Primary}"
+                    Command="{Binding LoginCmd}"
+                    Margin="0,10,0,0"/>
+        </StackLayout>
+        <Label HorizontalOptions="Center"
+               Margin="0,20,0,0"
+               Grid.Row="2">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Chưa có tài khoản? " TextColor="Gray"/>
+                    <Span Text="Đăng ký ngay" TextColor="{StaticResource Primary}" 
+                              TextDecorations="Underline">
+                        <Span.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GotoSignInCmd}" />
+                        </Span.GestureRecognizers>
+                    </Span>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <ActivityIndicator IsRunning="{Binding IsLoading, Mode=TwoWay}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Grid.RowSpan="3"
+                           Color="{StaticResource Primary}" />
+        <!--<busyIndicator:SfBusyIndicator AnimationType="SingleCircle" 
+                                       IsRunning="{Binding IsLoading, Mode=TwoWay}" 
+                                       TextColor="{StaticResource Primary}"
+                                       SizeFactor="0.5" 
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Grid.RowSpan="3"/>-->
+    </Grid>
+</ContentPage>

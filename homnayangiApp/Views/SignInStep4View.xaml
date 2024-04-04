@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.SignInStep4View"
+             Title="Chọn các tag mà bạn quan tâm"
+             xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:custom ="clr-namespace:homnayangiApp.CustomControls"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.BindingContext>
+        <viewmodel:SignInStep4ViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="{StaticResource Primary}" Offset="0"/>
+            <GradientStop Color="{StaticResource PrimaryDark}" Offset="1"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <Grid Margin="40,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Button StyleClass="TextButton"
+                Grid.Row="1"
+                Grid.Column="0"
+                VerticalOptions="Center"
+                HorizontalOptions="Start"
+                TextColor="White"
+                Text="Về trước"
+                FontSize="Medium"
+                Command="{Binding BackStepCmd}"/>
+        <Button StyleClass="TextButton"
+                Grid.Row="1"
+                Grid.Column="1"
+                VerticalOptions="Center"
+                HorizontalOptions="End"
+                TextColor="White"
+                Text="Xác nhận"
+                FontSize="Medium"
+                Command="{Binding GoStep5Cmd}"/>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height=".15*"/>
+                <RowDefinition Height=".9*"/>
+            </Grid.RowDefinitions>
+            <StackLayout Grid.Row="0" Spacing="20"
+                     Grid.ColumnSpan="2">
+                <Label Text="Chọn các TAG quan tâm"
+                   HorizontalOptions="Center"
+                   TextColor="White"
+                   FontSize="23"/>
+                <Label Text="(Tối đa 5 TAG)"
+                   Margin="0,-10,0,0"
+                   HorizontalOptions="Center"
+                   TextColor="White"
+                   FontSize="Medium"
+                   FontAttributes="Italic"/>
+            </StackLayout>
+            <ScrollView Orientation="Vertical"
+                        Grid.Row="1">
+                <CollectionView ItemsSource="{Binding ListTag}"
+                            ItemsLayout="VerticalGrid,3">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Background="{Binding ColorTag}"
+                                   HeightRequest="50"
+                                   Margin="5" Padding="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width=".8*"/>
+                                        <ColumnDefinition Width=".25*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding Img}"
+                                           Margin="0,0,5,0"
+                                           HeightRequest="15"
+                                           WidthRequest="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center"
+                                           Grid.Column="1"/>
+                                    <Label Text="{Binding TagName}" TextColor="White"
+                                           Margin="5,0,0,0"
+                                           VerticalTextAlignment="Center"
+                                           HorizontalTextAlignment="Center"
+                                           FontSize="Micro"
+                                           MaxLines="2"/>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding changeCheck}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>

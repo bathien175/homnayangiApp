@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.MessagesView"
+             Title="Tin nhắn"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
+             NavigationPage.HasNavigationBar="False">
+    <ScrollView Orientation="Vertical">
+        <StackLayout Padding="10">
+            <Grid>
+                <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Bell},Color=Gray, Size=25}"
+                        WidthRequest="50"
+                        HeightRequest="50"
+                        CornerRadius="120"
+                    BackgroundColor="White"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"/>
+                <Label Text="Tin nhắn"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       FontSize="Large"/>
+            </Grid>
+            <SearchBar VerticalOptions="Center"
+                        TextColor="Black"
+                        FontSize="16"
+                        Margin="0,20,0,50" 
+                        Placeholder="Tìm kiếm tin nhắn..." 
+                        CancelButtonColor="Red" />
+            <Image Source="backgroundmess.png" 
+                   HeightRequest="200"/>
+            <Label Text="Tính năng đang phát triển"
+                   FontAttributes="Bold"
+                   FontSize="Large"
+                   HorizontalOptions="Center"/>
+            <Label Text="Tính năng sẽ phát triển trong tương lai"
+                   FontSize="Small"
+                   Margin="0,10,0,0"
+                   TextColor="Gray"
+                   HorizontalOptions="Center"/>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

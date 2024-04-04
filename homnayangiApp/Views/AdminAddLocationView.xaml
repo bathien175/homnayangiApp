@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.AdminAddLocationView"
+             Title="Khởi tạo địa điểm"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
+             xmlns:custom="clr-namespace:homnayangiApp.CustomControls"
+             NavigationPage.HasNavigationBar="False" 
+             IsBusy="False">
+    <ContentPage.Resources>
+        <custom:ConvertMoney x:Key="MoneyConvert" />
+        <custom:BooleanInverseConverter x:Key="BooleanConvert" />
+        <custom:ConvertImageSource x:Key="ImageConvert" />
+    </ContentPage.Resources>
+    <ContentPage.BindingContext>
+        <viewmodel:AddLocationViewModel />
+    </ContentPage.BindingContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Background="{StaticResource Primary}">
+            <Label VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Text="Địa điểm"
+                   FontAttributes="Bold"
+                   FontSize="Medium"
+                   TextColor="White"/>
+            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Xmark}, Size=25}"
+                    TextColor="White" 
+                    WidthRequest="30"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    Margin="0,0,10,0">
+            </Button>
+        </Grid>
+        <ScrollView Grid.Row="1" 
+                    Orientation="Vertical">
+            <StackLayout Spacing="20" Padding="20">
+                <Grid Background="#E9E5E5"
+                      HeightRequest="60"
+                      Margin="-20,0,-20,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Text="THÔNG TIN HÌNH ẢNH" 
+                           Margin="10,0,0,0"
+                           VerticalTextAlignment="End"
+                           TextColor="Gray"/>
+                    <Label Text="Chọn ảnh đại diện cho địa điểm, có thể là menu" 
+                           Grid.Row="1"
+                           Margin="10,0,0,0"
+                           FontSize="12"
+                           VerticalTextAlignment="Start"
+                           TextColor="{StaticResource Primary}"/>
+                </Grid>
+                <Grid HeightRequest="100" Margin="0,0,-20,0">
+                    <Border StrokeShape="RoundRectangle 10"
+                            IsVisible="{Binding IsEmpty}"
+                            Stroke="{StaticResource Primary}"
+                            StrokeThickness="2"
+                            StrokeDashArray="1,1"
+                            Margin="0,0,20,0">
+                        <Frame CornerRadius="10"
+                               Background="#E9E5E5">
+                            <Grid HeightRequest="80">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="30"/>
+                                </Grid.RowDefinitions>
+                                <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Camera}, Color={StaticResource Primary}}"
+                                       HeightRequest="40"
+                                       VerticalOptions="End"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Chọn tối đa 10 bức ảnh"
+                                       VerticalOptions="Start"
+                                       HorizontalOptions="Center"
+                                       TextColor="Gray"
+                                       Grid.Row="1"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChooseImageCMD}" />
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </Border>
+                    <Grid IsVisible="{Binding IsEmpty, Converter={StaticResource BooleanConvert}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Primary}"
+                                StrokeThickness="2"
+                                StrokeDashArray="1,1"
+                                Margin="0,0,20,0"
+                                Grid.Column="0">
+                            <Frame CornerRadius="10"
+                                   Background="#E9E5E5">
+                                <Grid HeightRequest="80"
+                                      WidthRequest="80">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="30"/>
+                                    </Grid.RowDefinitions>
+                                    <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Camera}, Color={StaticResource Primary}}"
+                                           HeightRequest="40"
+                                           VerticalOptions="End"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Chọn ảnh"
+                                           VerticalOptions="Start"
+                                           HorizontalOptions="Center"
+                                           TextColor="Gray"
+                                           Grid.Row="1"/>
+                                </Grid>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ChooseImageCMD}" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </Border>
+                        <ScrollView Grid.Column="1"
+                                    Orientation="Horizontal">
+                            <CollectionView ItemsSource="{Binding ListImageSource}">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid HeightRequest="100" 
+                                              WidthRequest="100">
+                                            <Image WidthRequest="90"
+                                                   HeightRequest="90"
+                                                   Source="{Binding}"
+                                                   VerticalOptions="End" />
+                                            <Border Stroke="Black"
+                                                    StrokeShape="RoundRectangle 150"
+                                                    Margin="0,5,0,0"
+                                                    HeightRequest="20"
+                                                    WidthRequest="20"
+                                                    VerticalOptions="Start"
+                                                    HorizontalOptions="End">
+                                                <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Xmark}, Size=15, Color=White}"
+                                                        WidthRequest="20"
+                                                        BackgroundColor="Black"
+                                                        Command="{Binding removeImage}"
+                                                        CommandParameter="{Binding}"/>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </ScrollView>
+                    </Grid>
+                </Grid>
+                <input:FormView SubmitCommand="{Binding CreateLocationCMD}">
+                    <Grid Background="#E9E5E5"
+                          HeightRequest="60"
+                          Margin="-20,0,-20,20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Text="THÔNG TIN LIÊN LẠC" 
+                           Margin="10,0,0,0"
+                           VerticalTextAlignment="End"
+                           TextColor="Gray"/>
+                        <Label Text="Cung cấp địa chỉ hoặc thông tin liên lạc cần thiết" 
+                           Grid.Row="1"
+                           Margin="10,0,0,0"
+                           FontSize="12"
+                           VerticalTextAlignment="Start"
+                           TextColor="{StaticResource Primary}"/>
+                    </Grid>
+                    <Label Text="Tên địa điểm"
+                           TextColor="Gray"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="10,0,0,0"
+                           FontSize="18"/>
+                    <uranium:TextField BorderColor="LightGray"
+                                       Text="{Binding NameLocation}"
+                                       Margin="10,0,10,0"
+                                       TextColor="Gray"
+                                       TitleFontSize="16"
+                                       AccentColor="{StaticResource Primary}"
+                                       FontSize="16"
+                                       MaxLength="50"
+                                       AllowClear="True"
+                                       Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Store}, Color=Gray}">
+                    </uranium:TextField>
+                    <Label Text="Hotline"
+                           TextColor="Gray"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="10,20,0,0"
+                           FontSize="18"/>
+                    <uranium:TextField BorderColor="LightGray"
+                                       Text="{Binding Phone}"
+                                       Margin="10,0,10,0"
+                                       TextColor="Gray"
+                                       TitleFontSize="16"
+                                       AccentColor="{StaticResource Primary}"
+                                       FontSize="16"
+                                       MaxLength="12"
+                                       AllowClear="True"
+                                       Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Phone}, Color=Gray}">
+                    </uranium:TextField>
+                    <Label Text="Thành phố"
+                           TextColor="Gray"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="10,20,0,0"
+                           FontSize="18"/>
+                    <uranium:PickerField BorderColor="LightGray"
+                                     AllowClear="False"
+                                     ItemsSource="{Binding ListCity}"
+                                     SelectedIndex="{Binding CityIndexSelect}"
+                                     ItemDisplayBinding="{Binding province_name}"
+                                     Margin="10,0,10,0"
+                                     TextColor="Black"
+                                     AccentColor="{StaticResource Primary}"
+                                     FontSize="16"
+                                     SelectedValueChanged="PickerField_SelectedValueChanged"
+                                     Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.City}, Color=Gray}"/>
+                    <Label Text="Quận / Huyện"
+                           TextColor="Gray"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="10,20,0,0"
+                           FontSize="18"/>
+                    <uranium:PickerField BorderColor="LightGray"
+                                    AllowClear="False"
+                                    Margin="10,0,10,0"
+                                    TextColor="Black"
+                                    AccentColor="{StaticResource Primary}"
+                                    FontSize="16"
+                                    ItemsSource="{Binding ListDistrict}"
+                                    SelectedItem="{Binding DistrictSelect}"
+                                    Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.ArrowRightToCity}, Color=Gray}"/>
+                    <Label Text="Địa chỉ"
+                           TextColor="Gray"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="10,20,0,0"
+                           FontSize="18"/>
+                    <uranium:TextField BorderColor="LightGray"
+                                       Text="{Binding Address}"
+                                       Margin="10,0,10,0"
+                                       TextColor="Gray"
+                                       TitleFontSize="16"
+                                       AccentColor="{StaticResource Primary}"
+                                       FontSize="16"
+                                       AllowClear="True"
+                                       Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Map}, Color=Gray}">
+                    </uranium:TextField>
+                    <Grid Background="#E9E5E5"
+                          HeightRequest="60"
+                          Margin="-20,20,-20,20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Text="THÔNG TIN HOẠT ĐỘNG" 
+                               Margin="10,0,0,0"
+                               VerticalTextAlignment="End"
+                               TextColor="Gray"/>
+                        <Label Text="Cung cấp mức giá hoặc giờ hoạt động của địa điểm" 
+                               Grid.Row="1"
+                               Margin="10,0,0,0"
+                               FontSize="12"
+                               VerticalTextAlignment="Start"
+                               TextColor="{StaticResource Primary}"/>
+                    </Grid>
+                    <Label Text="Giờ hoạt động"
+                           TextColor="Gray"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="10,0,0,10"
+                           FontSize="18"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <uranium:TimePickerField Title="Giờ mở cửa " BorderColor="LightGray" TitleColor="Gray"
+                                                 Time="{Binding OpenTime}"
+                                                 IsEnabled="{Binding IsOpen24H, Converter={StaticResource BooleanConvert}}"
+                                                 Margin="0,0,5,0"
+                                                 Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Clock}, Color=Gray}"
+                                                 AllowClear="False">
+                        </uranium:TimePickerField>
+                        <uranium:TimePickerField Title="Giờ đóng cửa "  Grid.Column="1" TitleColor="Gray"
+                                                 Time="{Binding CloseTime}"
+                                                 IsEnabled="{Binding IsOpen24H, Converter={StaticResource BooleanConvert}}"
+                                                 Margin="5,0,0,0" BorderColor="LightGray"
+                                                 Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Clock}, Color=Gray}"
+                                                 AllowClear="False">
+                        </uranium:TimePickerField>
+                    </Grid>
+                    <uranium:CheckBox Text="24/24"
+                                      IsChecked="{Binding IsOpen24H}"
+                                      Margin="0,10,0,0"
+                                      LabelPosition="Before"
+                                      HorizontalOptions="End"/>
+                    <Label Text="Giá bán"
+                           TextColor="Gray"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="10,0,0,10"
+                           FontSize="18"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <uranium:TextField BorderColor="LightGray"
+                                           TitleColor="Gray"
+                                           Keyboard="Numeric"
+                                           Title="Giá thấp nhất "
+                                           Margin="0,0,5,0"
+                                           TextColor="Gray"
+                                           TitleFontSize="13"
+                                           AccentColor="{StaticResource Primary}"
+                                           FontSize="14"
+                                           AllowClear="True"
+                                           Text="{Binding MinPrice , Converter={StaticResource MoneyConvert}}"
+                                           Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.MoneyBill}, Color=Gray}">
+                        </uranium:TextField>
+                        <uranium:TextField BorderColor="LightGray"
+                                           TitleColor="Gray"
+                                           Keyboard="Numeric"
+                                           Title="Giá cao nhất "
+                                           Grid.Column="1"
+                                           Margin="5,0,0,0"
+                                           TextColor="Gray"
+                                           TitleFontSize="13"
+                                           Text="{Binding MaxPrice , Converter={StaticResource MoneyConvert}}"
+                                           AccentColor="{StaticResource Primary}"
+                                           FontSize="14"
+                                           AllowClear="True"
+                                           Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.MoneyBill}, Color=Gray}">
+                        </uranium:TextField>
+                        
+                    </Grid>
+                    <Label Text="Tags của địa điểm"
+                           TextColor="Gray"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="10,20,0,10"
+                           FontSize="18"/>
+                    <uranium:MultiplePickerField BorderColor="LightGray"
+                                                 AccentColor="{StaticResource Primary}"
+                                                 ItemsSource="{Binding ListTag}"
+                                                 SelectedItems="{Binding TagSelect, Mode=TwoWay}"
+                                                 Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Tag}, Color=Gray}"
+                                                 />
+                    <Button StyleClass="FilledButton"
+                            input:FormView.IsSubmitButton="True"
+                            FontAttributes="Bold"
+                            Margin="0,20,0,0"
+                            Text="Lưu thay đổi?"/>
+                </input:FormView>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

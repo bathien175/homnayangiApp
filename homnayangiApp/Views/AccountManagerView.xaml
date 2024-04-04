@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.AccountManagerView"
+             Title="Thông tin cá nhân"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.BindingContext>
+        <viewmodel:AccountManagerViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView Orientation="Vertical">
+        <VerticalStackLayout Padding="10">
+            <Grid>
+                <Label Text="Thông tin cá nhân"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       FontSize="18"/>
+                <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CircleArrowLeft},Color=Gray}"
+                        WidthRequest="50"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"
+                        Command="{Binding BackPageCMD}"/>
+            </Grid>
+            <Grid HeightRequest="150">
+                <Border HeightRequest="100"
+                    HorizontalOptions="Center"
+                    StrokeShape="RoundRectangle 150"
+                    StrokeThickness="3"
+                    VerticalOptions="Center"
+                    WidthRequest="100">
+                    <Image Source="{Binding ImageUser}" 
+                        Aspect="AspectFill"
+                        HeightRequest="100"
+                        WidthRequest="100"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"/>
+                </Border>
+                <Border StrokeShape="RoundRectangle 40"
+                        StrokeThickness="2"
+                        WidthRequest="45"
+                        HeightRequest="130"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border HeightRequest="40"
+                                WidthRequest="40"
+                                HorizontalOptions="Center"
+                                StrokeShape="RoundRectangle 150"
+                                StrokeThickness="5"
+                                VerticalOptions="Start"
+                                Stroke="Green"
+                                Grid.Row="0">
+                            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Camera},Color=Black, Size=20}"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    Command="{Binding TakePic}"/>
+                        </Border>
+                        <Border HeightRequest="40"
+                                WidthRequest="40"
+                                HorizontalOptions="Center"
+                                StrokeShape="RoundRectangle 150"
+                                StrokeThickness="5"
+                                VerticalOptions="Start"
+                                Stroke="#FF8474"
+                                Grid.Row="1">
+                            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.File},Color=Black, Size=20}"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    Command="{Binding ChoosePic}"/>
+                        </Border>
+                        <Border HeightRequest="40"
+                                WidthRequest="40"
+                                HorizontalOptions="Center"
+                                StrokeShape="RoundRectangle 150"
+                                StrokeThickness="5"
+                                VerticalOptions="Start"
+                                Stroke="Red"
+                                Grid.Row="2">
+                            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CameraRotate},Color=Black, Size=20}"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    Command="{Binding ResetPic}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+            <input:FormView SubmitCommand="{Binding UpdateInformation}">
+                <Label Text="Tên người dùng"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       Margin="10,0,0,0"
+                       FontSize="18"/>
+                <uranium:TextField BorderColor="LightGray"
+                                   Margin="10,0,10,0"
+                                   TextColor="Black"
+                                   TitleFontSize="16"
+                                   AccentColor="{StaticResource Primary}"
+                                   FontSize="16"
+                                   Text="{Binding NameUser}"
+                                   MaxLength="30"
+                                   AllowClear="True"
+                                   Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.User}, Color=Gray}">
+                    <validate:RequiredValidation Message="Không bỏ trống tên người dùng" />
+                </uranium:TextField>
+                <Label Text="ID người dùng"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       Margin="10,20,0,0"
+                       FontSize="18"/>
+                <uranium:TextField BorderColor="Red"
+                                   Margin="10,0,10,0"
+                                   TextColor="Black"
+                                   AccentColor="{StaticResource Primary}"
+                                   FontSize="16"
+                                   Text="{Binding CurentUser.IDUser}"
+                                   IsReadOnly="True"
+                                   Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.At}, Color=Gray}"/>
+                <Label Text="Số điện thoại"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       Margin="10,20,0,0"
+                       FontSize="18"/>
+                <uranium:TextField BorderColor="Red"
+                                   Margin="10,0,10,0"
+                                   TextColor="Black"
+                                   AccentColor="{StaticResource Primary}"
+                                   FontSize="16"
+                                   Text="{Binding CurentUser.Phone}"
+                                   IsReadOnly="True"
+                                   Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Phone}, Color=Gray}"/>
+                <Label Text="Giới tính"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       Margin="10,20,0,0"
+                       FontSize="18"/>
+                <uranium:PickerField BorderColor="LightGray"
+                                     AllowClear="False"
+                                     ItemsSource="{Binding ListGender}"
+                                     Margin="10,0,10,0"
+                                     TextColor="Black"
+                                     AccentColor="{StaticResource Primary}"
+                                     FontSize="16"
+                                     SelectedItem="{Binding GenderUser}"
+                                     Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Transgender}, Color=Gray}"/>
+                <Label Text="Ngày sinh"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       Margin="10,20,0,0"
+                       FontSize="18"/>
+                <uranium:DatePickerField BorderColor="LightGray"
+                                         AllowClear="False"
+                                         Margin="10,0,10,0"
+                                         TextColor="Black"
+                                         TitleFontSize="16"
+                                         AccentColor="{StaticResource Primary}"
+                                         FontSize="16"
+                                         Date="{Binding DatebirthUser}"
+                                         Format="dd-MM-yyyy"
+                                         Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CalendarDay}, Color=Gray}"/>
+                <Label Text="Thành phố sống"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       Margin="10,20,0,0"
+                       FontSize="18"/>
+                <uranium:PickerField BorderColor="LightGray"
+                                     AllowClear="False"
+                                     ItemsSource="{Binding ListCity}"
+                                     SelectedIndex="{Binding CitySelect}"
+                                     ItemDisplayBinding="{Binding province_name}"
+                                     Margin="10,0,10,0"
+                                     TextColor="Black"
+                                     AccentColor="{StaticResource Primary}"
+                                     FontSize="16"
+                                     SelectedValueChanged="PickerField_SelectedValueChanged"
+                                     Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.City}, Color=Gray}"/>
+                <Label Text="Quận / Huyện"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       Margin="10,20,0,0"
+                       FontSize="18"/>
+                <uranium:PickerField BorderColor="LightGray"
+                                    AllowClear="False"
+                                    Margin="10,0,10,0"
+                                    TextColor="Black"
+                                    AccentColor="{StaticResource Primary}"
+                                    FontSize="16"
+                                    ItemsSource="{Binding ListDistrict}"
+                                    SelectedItem="{Binding DistrictUser}"
+                                    Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.ArrowRightToCity}, Color=Gray}"/>
+                <Label Text="Các tag quan tâm"
+                       TextColor="{DynamicResource Black}"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontAttributes="Bold"
+                       Margin="10,20,0,0"
+                       FontSize="18"/>
+                <uranium:MultiplePickerField BorderColor="LightGray"
+                                             Margin="10,0,10,0"
+                                             AccentColor="{StaticResource Primary}"
+                                             ItemsSource="{Binding ListTag}"
+                                             SelectedItems="{Binding TagSelect, Mode=TwoWay}"
+                                             Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Tag}, Color=Gray}"/>
+                <Label Text="{Binding TextError}"
+                       TextColor="Red"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       Margin="10,0,0,0"
+                       FontSize="Small"/>
+
+                <Button StyleClass="FilledButton"
+                        input:FormView.IsSubmitButton="True"
+                        FontAttributes="Bold"
+                        Margin="10,20,10,0"
+                        Text="Lưu thay đổi?"/>
+            </input:FormView>
+
+            <Label Text="Đổi mật khẩu?"
+                   TextColor="{StaticResource Primary}"
+                   TextDecorations="Underline"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Margin="10,10,0,20"
+                   FontSize="14">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding gotoChangePasswordCMD}" />
+                </Label.GestureRecognizers>
+            </Label>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
