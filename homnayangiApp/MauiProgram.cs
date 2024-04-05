@@ -1,4 +1,5 @@
-﻿using homnayangiApp.ModelService;
+﻿using FFImageLoading.Maui;
+using homnayangiApp.ModelService;
 using homnayangiApp.ModelService.StoreSetting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,7 @@ namespace homnayangiApp
             builder
                 .UseMauiApp<App>()
                 .UseUraniumUI()
+                .UseFFImageLoading()
                 .UseUraniumUIMaterial()
                 .UseUraniumUIBlurs()
                 .ConfigureMopups()

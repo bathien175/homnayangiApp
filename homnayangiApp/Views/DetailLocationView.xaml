@@ -325,10 +325,21 @@
                        Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Message}, Color={StaticResource Primary}, Size=20}"/>
             </Border>
             <Button StyleClass="FilledButton"
+                    IsVisible="{Binding LocationCurr.IsUserCreate, Converter={StaticResource BoolConvert}}"
                     Margin="0,0,10,0"
                     CornerRadius="50"
                     HeightRequest="50"
                     Text="Đánh giá"
+                    TextTransform="Uppercase"
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    BackgroundColor="{StaticResource Primary}"/>
+            <Button StyleClass="FilledButton"
+                    IsVisible="{Binding LocationCurr.IsUserCreate}"
+                    Margin="0,0,10,0"
+                    CornerRadius="50"
+                    HeightRequest="50"
+                    Text="Chỉnh sửa"
                     TextTransform="Uppercase"
                     Grid.Column="1"
                     FontAttributes="Bold"

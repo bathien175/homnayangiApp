@@ -43,6 +43,7 @@ namespace homnayangiApp.ViewModels
         private ObservableCollection<string> tagSelect = new ObservableCollection<string>();
         private bool isLoading = false;
         private List<String> listGender = new List<string>();
+        private bool isExecuteCMD = false;
 
         public List<string> ListTag { get => listTag; set => SetProperty(ref listTag, value); }
         public ObservableCollection<string> TagSelect { get => tagSelect;
@@ -101,7 +102,14 @@ namespace homnayangiApp.ViewModels
         }
         private async void executegotoInformationCMD()
         {
-            await Application.Current.MainPage.Navigation.PushModalAsync(new AccountManagerView());
+            if (IsExecuteCMD == true)
+                return;
+            IsLoading = true;
+            IsExecuteCMD = true;
+            var v = await Task.Run(() => new AccountManagerView());
+            await Application.Current.MainPage.Navigation.PushModalAsync(v);
+            IsLoading = false;
+            IsExecuteCMD = false;
         }
 
         private async void executeChangePassCMD()
@@ -271,7 +279,14 @@ namespace homnayangiApp.ViewModels
         }
         private async void executeSettingsCMD()
         {
-            await Shell.Current.Navigation.PushModalAsync(new SettingView());
+            if (IsExecuteCMD == true)
+                return;
+            IsExecuteCMD = true;
+            IsLoading = true;
+            var v = await Task.Run(() => new SettingView());
+            await Shell.Current.Navigation.PushModalAsync(v);
+            IsLoading = false; 
+            IsExecuteCMD = false;
         }
 
         private async void executeLogoutCMD()
@@ -430,5 +445,6 @@ namespace homnayangiApp.ViewModels
         public string ErrorRePass { get => errorRePass; set => SetProperty(ref errorRePass, value); }
         public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
         public List<string> ListGender { get => listGender; set => SetProperty(ref listGender, value); }
+        public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
     }
 }

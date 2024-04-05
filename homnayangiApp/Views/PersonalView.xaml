@@ -12,10 +12,8 @@
              Background="White"
              xmlns:custom ="clr-namespace:homnayangiApp.CustomControls"
              Appearing="ContentPage_Appearing"
-             IsBusy="{Binding IsLoading}">
-    <ContentPage.BindingContext>
-        <viewmodel:AccountManagerViewModel />
-    </ContentPage.BindingContext>
+             IsBusy="{Binding IsLoading}"
+             x:DataType="viewmodel:AccountManagerViewModel">
     <ContentPage.Resources>
         <custom:ConvertImageSource x:Key="ImageConvert" />
     </ContentPage.Resources>

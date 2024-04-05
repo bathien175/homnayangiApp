@@ -7,6 +7,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -23,9 +24,10 @@ namespace homnayangiApp.ViewModels
         private string nameUser = string.Empty;
         private string? imageByteUser;
         private ImageSource imageUserSource;
-        private ObservableCollection<Models.LocationItem> listLocationNear = new ObservableCollection<Models.LocationItem>();
-        private ObservableCollection<Models.LocationItem> listLocationByTag = new ObservableCollection<Models.LocationItem>();
-        private ObservableCollection<Models.LocationItem> listLocationUserCreate = new ObservableCollection<Models.LocationItem>();
+        private ObservableCollection<Models.LocationItem> listLocationNear = [];
+        private ObservableCollection<Models.LocationItem> listLocationByTag = [];
+        private ObservableCollection<Models.LocationItem> listLocationUserCreate = [];
+        private bool isExecuteCMD = false;
 
         public string NameUser { get => nameUser; set => SetProperty(ref nameUser, value); }
         public string? ImageByteUser { get => imageByteUser; set
@@ -42,6 +44,8 @@ namespace homnayangiApp.ViewModels
 
 
         public DelegateCommand<string> GotoListLocationCMD { get; }
+        public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
+
         public MainPageViewModel()
         {
             _locationService = new LocationService();
@@ -87,23 +91,31 @@ namespace homnayangiApp.ViewModels
 
         private async void executeGotoListCMD(string objs)
         {
+            if (IsExecuteCMD)
+                return;
+
+            IsExecuteCMD = true;
+            IsLoading = true;
             int obj = Convert.ToInt32(objs);
             switch (obj)
             {
                 case 0:
-                    var vm = new ListLocationViewModel();
-                    vm.Mode = 0;
-                    await Shell.Current.Navigation.PushAsync(new ListLocationView() { BindingContext = vm });
+                    var vm = await Task.Run(() => new ListLocationViewModel() { Mode = 0 });
+                    await Application.Current.MainPage.Navigation.PushModalAsync(new ListLocationView() { BindingContext = vm });
+                    IsExecuteCMD = false;
+                    IsLoading = false;
                     break;
                 case 1:
-                    var vm1 = new ListLocationViewModel();
-                    vm1.Mode = 1;
-                    await Shell.Current.Navigation.PushAsync(new ListLocationView() { BindingContext = vm1 });
+                    var vm1 = await Task.Run(() => new ListLocationViewModel() { Mode = 1 });
+                    await Application.Current.MainPage.Navigation.PushModalAsync(new ListLocationView() { BindingContext = vm1 });
+                    IsExecuteCMD = false;
+                    IsLoading = false;
                     break;
                 case 2:
-                    var vm2 = new ListLocationViewModel();
-                    vm2.Mode = 2;
-                    await Shell.Current.Navigation.PushAsync(new ListLocationView() { BindingContext = vm2 });
+                    var vm2 = await Task.Run(() => new ListLocationViewModel() { Mode = 2 });
+                    await Application.Current.MainPage.Navigation.PushModalAsync(new ListLocationView() { BindingContext = vm2 });
+                    IsExecuteCMD = false;
+                    IsLoading = false;
                     break;
             }
         }
@@ -116,116 +128,56 @@ namespace homnayangiApp.ViewModels
         public async void loadLocation()
         {
             IsLoading = true;
+            ListLocationNear.Clear();
+            ListLocationByTag.Clear();
+            ListLocationUserCreate.Clear();
             List<Models.Location> ListGet = await Task.Run(() => _locationService.GetIsShare());
-            Task task1 = Task.Run(() =>
+            await Task.Run(() =>
             {
-                var listnear = ListGet.FindAll(x =>
-                                x.Creator == null && x.Province == dataLogin.Instance.currUser.City)
-                                .OrderBy(x => x.District == dataLogin.Instance.currUser.Dictrict);
-                if (listnear.Count() > 5)
+                if(ListGet.Count > 0)
                 {
-                    var listnew = new ObservableCollection<Models.LocationItem>();
-                    foreach (var item in listnear.Take(5))
+                    foreach (var location in ListGet)
                     {
                         Models.LocationItem model = new Models.LocationItem();
-                        model.LocationCurrent = item;
-                        if(dataLogin.Instance.currUser.SaveStore != null)
-                        {
-                            if(dataLogin.Instance.currUser.SaveStore.Where(x => x == item.Id).FirstOrDefault() != null)
-                            {
-                                model.IsSave = true;
-                            }
-                        }
-                        listnew.Add(model);
-                    }
-                    ListLocationNear = listnew;
-                }
-                else
-                {
-                    var listnew = new ObservableCollection<Models.LocationItem>();
-                    foreach (var item in listnear)
-                    {
-                        Models.LocationItem model = new Models.LocationItem();
-                        model.LocationCurrent = item;
+                        model.LocationCurrent = location;
+
+                        // Kiểm tra xem địa điểm này có nằm trong danh sách lưu trữ của người dùng hay không
                         if (dataLogin.Instance.currUser.SaveStore != null)
                         {
-                            if (dataLogin.Instance.currUser.SaveStore.Where(x => x == item.Id).FirstOrDefault() != null)
+                            if (dataLogin.Instance.currUser.SaveStore.Contains(location.Id))
                             {
                                 model.IsSave = true;
                             }
                         }
-                        listnew.Add(model);
-                    }
-                    ListLocationNear = listnew;
-                }
-            });
-            Task task2 = Task.Run(() =>
-            {
-                var listtag = ListGet.Where(x => x.Tags.Any(value => dataLogin.Instance.currUser.Tags.Contains(value))).ToList();
-                if (listtag.Count() > 5)
-                {
-                    var listnew = new ObservableCollection<Models.LocationItem>();
-                    foreach (var item in listtag.Take(5))
-                    {
-                        Models.LocationItem model = new Models.LocationItem();
-                        model.LocationCurrent = item;
-                        if (dataLogin.Instance.currUser.SaveStore != null)
+                        // Thêm đối tượng LocationItem vào danh sách tương ứng
+                        if (location.Creator == dataLogin.Instance.currUser.Id)
                         {
-                            if (dataLogin.Instance.currUser.SaveStore.Where(x => x == item.Id).FirstOrDefault() != null)
+                            if (ListLocationUserCreate.Count < 5)
                             {
-                                model.IsSave = true;
+                                ListLocationUserCreate.Add(model);
                             }
                         }
-                        listnew.Add(model);
-                    }
-                    ListLocationByTag = listnew;
-                }
-                else
-                {
-                    var listnew = new ObservableCollection<Models.LocationItem>();
-                    foreach (var item in listtag)
-                    {
-                        Models.LocationItem model = new Models.LocationItem();
-                        model.LocationCurrent = item;
-                        if (dataLogin.Instance.currUser.SaveStore != null)
+                        else
                         {
-                            if (dataLogin.Instance.currUser.SaveStore.Where(x => x == item.Id).FirstOrDefault() != null)
+                            if (location.Province == dataLogin.Instance.currUser.City)
                             {
-                                model.IsSave = true;
+                                if (ListLocationNear.Count < 5)
+                                {
+                                    ListLocationNear.Add(model);
+                                }
+                            }
+
+                            if (location.Tags.Any(value => dataLogin.Instance.currUser.Tags.Contains(value)))
+                            {
+                                if (ListLocationByTag.Count < 5)
+                                {
+                                    ListLocationByTag.Add(model);
+                                }
                             }
                         }
-                        listnew.Add(model);
                     }
-                    ListLocationByTag = listnew;
                 }
             });
-            Task task3 = Task.Run(() =>
-            {
-                var listcreate = ListGet.Where(x => x.Creator == dataLogin.Instance.currUser.Id).ToList();
-                if (listcreate.Count() > 5)
-                {
-                    var listnew = new ObservableCollection<Models.LocationItem>();
-                    foreach (var item in listcreate.Take(5))
-                    {
-                        Models.LocationItem model = new Models.LocationItem();
-                        model.LocationCurrent = item;
-                        listnew.Add(model);
-                    }
-                    ListLocationUserCreate = listnew;
-                }
-                else
-                {
-                    var listnew = new ObservableCollection<Models.LocationItem>();
-                    foreach (var item in listcreate)
-                    {
-                        Models.LocationItem model = new Models.LocationItem();
-                        model.LocationCurrent = item;
-                        listnew.Add(model);
-                    }
-                    ListLocationUserCreate = listnew;
-                }
-            });
-            await Task.WhenAll(task1, task2, task3);
             IsLoading = false;
         }
         public void loadImage()

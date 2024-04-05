@@ -19,6 +19,7 @@ namespace homnayangiApp.Models
         private Location _locationCurrent = new Location();
         private bool _isSave = false;
         private bool _isUserCreate = false;
+        private bool isExecuteCMD = false;
 
         public Location LocationCurrent { get => _locationCurrent;
             set
@@ -38,6 +39,7 @@ namespace homnayangiApp.Models
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand gotoDetail { get; }
         public bool IsUserCreate { get => _isUserCreate; set => SetProperty(ref _isUserCreate, value); }
+        public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
 
         public LocationItem()
         {
@@ -47,13 +49,24 @@ namespace homnayangiApp.Models
 
         private async void executeGotoDetailCMD()
         {
-            var vm = new DetailLocationViewModel();
-            vm.LocationCurr = this;
-            await Shell.Current.Navigation.PushAsync(new DetailLocationView() { BindingContext = vm});
+            if (IsExecuteCMD)
+                return;
+
+            IsExecuteCMD = true;
+            var vm = await Task.Run(() => new DetailLocationViewModel
+            {
+                LocationCurr = this
+            });
+            await Application.Current.MainPage.Navigation.PushModalAsync(new DetailLocationView() { BindingContext = vm});
+            IsExecuteCMD = false;
         }
 
         private async void executeSaveCMD()
         {
+            if (IsExecuteCMD)
+                return;
+
+            IsExecuteCMD = true;
             IUserService userService = new UserService();
             if (IsSave)
             {
@@ -82,6 +95,7 @@ namespace homnayangiApp.Models
                     }
                 });
             }
+            IsExecuteCMD = false;
         }
     }
 }

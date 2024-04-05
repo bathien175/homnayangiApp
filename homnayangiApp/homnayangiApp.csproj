@@ -78,7 +78,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiIcon Include="Resources\AppIcon\appicon.svg">
+	  <MauiIcon Include="Resources\AppIcon\appicon.svg" Color="#00FFFFFF">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </MauiIcon>
 	</ItemGroup>
@@ -88,6 +88,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FFImageLoading.Maui" Version="1.1.3" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />

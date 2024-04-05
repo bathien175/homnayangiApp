@@ -8,12 +8,11 @@ public partial class PersonalView : ContentPage
 	public PersonalView()
 	{
 		InitializeComponent();
-		//BindingContext = new AccountManagerViewModel();
+		BindingContext = new AccountManagerViewModel();
 	}
 
     private void ContentPage_Appearing(object sender, EventArgs e)
     {
-		var vm = (AccountManagerViewModel)BindingContext;
-		vm.loadImage();
-	}
+        BindingContext = new AccountManagerViewModel();
+    }
 }

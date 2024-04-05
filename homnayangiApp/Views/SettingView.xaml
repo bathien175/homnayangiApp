@@ -17,10 +17,11 @@
         <StackLayout Padding="10">
             <Grid>
                 <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CircleArrowLeft},Color=Gray}"
-                    WidthRequest="50"
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="Start"
-                    VerticalOptions="Center"/>
+                        WidthRequest="50"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"
+                        Command="{Binding backPageCMD}"/>
                 <Label Text="Cài đặt"
                        TextColor="{DynamicResource Black}"
                        HorizontalOptions="Center"

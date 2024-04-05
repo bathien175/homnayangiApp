@@ -79,8 +79,8 @@
                 </Border>
             </Grid>
             <Label
-                FontSize="Medium"
-                Margin="20,-20,20,0"
+                FontSize="16"
+                Margin="20,-30,20,0"
                 SemanticProperties.HeadingLevel="Level1"
                 SemanticProperties.Description="Chào khách hàng">
                 <Label.FormattedText>
@@ -93,13 +93,13 @@
 
             <Label
                 Text="Bạn đang muốn tìm gì?"
-                FontSize="Large"
+                FontSize="18"
                 FontAttributes="Bold"
                 Margin="20,-20,20,0"
                 SemanticProperties.HeadingLevel="Level2"
                 SemanticProperties.Description="Hỏi khách hàng muốn tìm kiếm điều gì?" />
 
-            <Grid HeightRequest="50" Margin="20,0,20,0">
+            <Grid HeightRequest="50" Margin="20,-10,20,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="50"/>
@@ -139,11 +139,11 @@
                         <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
                     <Label Text="Ở gần bạn" FontAttributes="Bold"
-                           FontSize="Medium"
+                           FontSize="16"
                            VerticalOptions="Center"
                            Grid.Column="0"/>
                     <Label Text="Xem tất cả" FontAttributes="Bold"
-                           FontSize="Small"
+                           FontSize="12"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            TextColor="{StaticResource Primary}"
@@ -331,11 +331,11 @@
                         <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
                     <Label Text="Các TAG bạn quan tâm" FontAttributes="Bold"
-                           FontSize="Medium"
+                           FontSize="16"
                            VerticalOptions="Center"
                            Grid.Column="0"/>
                     <Label Text="Xem tất cả" FontAttributes="Bold"
-                           FontSize="Small"
+                           FontSize="12"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            TextColor="{StaticResource Primary}"
@@ -522,11 +522,11 @@
                         <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
                     <Label Text="Nơi bạn tạo" FontAttributes="Bold"
-                           FontSize="Medium"
+                           FontSize="16"
                            VerticalOptions="Center"
                            Grid.Column="0"/>
                     <Label Text="Xem tất cả" FontAttributes="Bold"
-                           FontSize="Small"
+                           FontSize="12"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            TextColor="{StaticResource Primary}"
