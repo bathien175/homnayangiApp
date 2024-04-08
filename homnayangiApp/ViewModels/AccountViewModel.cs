@@ -13,39 +13,14 @@ namespace homnayangiApp.ViewModels
     public class AccountViewModel : BaseViewModel
     {
         private readonly IUserService _userService;
-        private string phone = String.Empty;
-        private string name = String.Empty;
-        private string password = String.Empty;
-        private string repassword = String.Empty;
         private bool _isNoMatchingPassword = false;
         private string phoneLogin = string.Empty;
         private string passLogin = string.Empty;
         private bool isRemember = false;
         private bool isLoading = false;
 
-        public string Phone { get => phone; set => SetProperty(ref phone, value); }
-        public string Name { get => name; set => SetProperty(ref name, value); }
-        public string Password { get => password; set => SetProperty(ref password, value); }
-        public string Repassword
-        {
-            get => repassword; set
-            {
-                SetProperty(ref repassword, value);
-                if (!value.Equals(Password))
-                {
-                    IsNoMatchingPassword = true;
-                }
-                else
-                {
-                    IsNoMatchingPassword = false;
-                }
-            }
-        }
         public bool IsNoMatchingPassword { get => _isNoMatchingPassword; set => SetProperty(ref _isNoMatchingPassword, value); }
-        
 
-
-        public DelegateCommand SignInCmd { get; }
         public DelegateCommand GotoSignInCmd { get; }
         public DelegateCommand GotoForgotCmd { get; }
         public DelegateCommand CompleteSignInCmd { get; }
@@ -66,12 +41,7 @@ namespace homnayangiApp.ViewModels
             //    PhoneLogin = Preferences.Get("PhoneNumber", string.Empty);
             //    PassLogin = Preferences.Get("Password", string.Empty);
             //}
-            Name = dataSignIn.Instance.userName;
-            Phone = dataSignIn.Instance.userPhone;
-            Password = dataSignIn.Instance.userPass;
-            Repassword = Password;
             BackToLoginCmd = new DelegateCommand(executeBackLoginCMD);
-            SignInCmd = new DelegateCommand(executeSignInCMD);
             BackStepCmd = new DelegateCommand(executeBackStepCMD);
             CompleteSignInCmd = new DelegateCommand(executeCompleteSignInCmdCMD);
             GotoSignInCmd = new DelegateCommand(executeGotoSignInCMD);
@@ -102,84 +72,63 @@ namespace homnayangiApp.ViewModels
                     dataLogin.Instance.currUser = a;
                     if (a.IDUser == "@admin@")
                     {
-                        var view = new AdminAddLocationView();
-                        await Application.Current.MainPage.Navigation.PushAsync(view);
+                        await Shell.Current.GoToAsync(nameof(AdminAddLocationView));
                     }
                     else
                     {
-                        var view = new AppShell();
-                        Application.Current.MainPage = view;
+                        await Shell.Current.GoToAsync("//HomeApp");
                     }
                 }
                 else
                 {
-                    Application.Current.MainPage.DisplayAlert("Lỗi đăng nhập", "Số điện thoại hoặc mật khẩu không đúng!", "Thử lại");
+                   await Shell.Current.DisplayAlert("Lỗi đăng nhập", "Số điện thoại hoặc mật khẩu không đúng!", "Thử lại");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Application.Current.MainPage.DisplayAlert("Lỗi đăng nhập", "Server không có phản hồi!", "Thử lại");
+                string s = ex.Message;
+                await Shell.Current.DisplayAlert("Lỗi đăng nhập", "Server không có phản hồi!", "Thử lại");
             }
             finally { IsLoading = false; }
         }
 
         private async void executeGotoForgotCMD()
         {
-            await Application.Current.MainPage.Navigation.PushAsync(new ForgotPasswordView());
+            IsLoading = true;
+            await Shell.Current.GoToAsync("//ForgotPassword");
+            IsLoading = false;
         }
 
         private async void executeBackLoginCMD()
         {
             dataSignIn.Instance.clearData();
-            await Application.Current.MainPage.Navigation.PopAsync(true);
+            await Shell.Current.GoToAsync("//Login");
         }
 
         private async void executeBackStepCMD()
         {
-            await Application.Current.MainPage.Navigation.PopAsync(true);
+            await Shell.Current.GoToAsync("..");
         }
 
         private async void executeCompleteSignInCmdCMD()
         {
             //quay về login
-            await Application.Current.MainPage.Navigation.PushModalAsync(new LoginView());
-
+            await Shell.Current.GoToAsync("//Login");
         }
 
         private async void executeGotoSignInCMD()
         {
-            await Application.Current.MainPage.Navigation.PushAsync(new SignInView());
-        }
+            IsLoading = true;
+            try
+            {
+                await Shell.Current.GoToAsync("//SignIn");
+            }
+            catch (Exception ex)
+            {
 
-        private async void executeSignInCMD()
-        {
-            if (!Repassword.Equals(Password))
-            {
-                IsNoMatchingPassword = true;
+                throw;
             }
-            else
-            {
-                IsNoMatchingPassword = false;
-                var u = _userService.GetbyPhone(Phone);
-                if (u == null)
-                {
-                    try
-                    {
-                        dataSignIn.Instance.userName = Name;
-                        dataSignIn.Instance.userPhone = Phone;
-                        dataSignIn.Instance.userPass = Password;
-                        await Application.Current.MainPage.Navigation.PushAsync(new SignInStep2View());
-                    }
-                    catch (Exception ex)
-                    {
-                        await Application.Current.MainPage.DisplayAlert("Thất bại!", "Server xảy ra lỗi!", "Thử lại");
-                    }
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Thất bại!", "Số điện thoại đã được đăng ký trước đó!", "Thử lại");
-                }
-            }
+            IsLoading = false;
         }
         public string GetMD5Hash(string input)
         {

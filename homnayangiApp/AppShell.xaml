@@ -10,7 +10,43 @@
     Shell.FlyoutBehavior="Flyout"
     Shell.NavBarIsVisible="False"
     >
+    <ShellContent
+        ContentTemplate="{DataTemplate view:LoginView}"
+        Route="Login" 
+        Title="Đăng nhập"/>
+
+    <ShellContent
+        ContentTemplate="{DataTemplate view:SignInView}"
+        Route="SignIn" 
+        Title="Đăng ký"/>
+
+    <ShellContent
+        ContentTemplate="{DataTemplate view:SignInStep2View}"
+        Route="SignInStep2" 
+        Title="Đăng ký"/>
+    
+    <ShellContent
+        ContentTemplate="{DataTemplate view:SignInStep3View}"
+        Route="SignInStep3" 
+        Title="Đăng ký"/>
+    
+    <ShellContent
+        ContentTemplate="{DataTemplate view:SignInStep4View}"
+        Route="SignInStep4" 
+        Title="Đăng ký"/>
+    
+    <ShellContent
+        ContentTemplate="{DataTemplate view:SignInStep5View}"
+        Route="SignInStep5" 
+        Title="Đăng ký"/>
+
+    <ShellContent
+        ContentTemplate="{DataTemplate view:ForgotPasswordView}"
+        Route="ForgotPassword" 
+        Title="Quên mật khẩu"/>
+
     <FlyoutItem Title="Trang chủ" 
+                Route="HomeApp"
                 FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent
             ContentTemplate="{DataTemplate local:MainPage}"
@@ -34,7 +70,7 @@
             Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Message}}"/>
         <ShellContent
             ContentTemplate="{DataTemplate view:PersonalView}"
-            Route="SignInView" 
+            Route="Personal" 
             Title="Tài khoản"
             Icon="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.User}}"/>
     </FlyoutItem>

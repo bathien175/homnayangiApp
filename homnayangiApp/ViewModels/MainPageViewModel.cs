@@ -3,17 +3,7 @@ using homnayangiApp.CustomControls;
 using homnayangiApp.ModelService;
 using homnayangiApp.ViewModels.Base;
 using homnayangiApp.Views;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Driver;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace homnayangiApp.ViewModels
 {
@@ -120,65 +110,90 @@ namespace homnayangiApp.ViewModels
             }
         }
 
-        void loadData()
+        public void loadData()
         {
             NameUser = dataLogin.Instance.currUser.Name;
             ImageByteUser = dataLogin.Instance.currUser.ImageData;
+            loadLocation();
         }
-        public async void loadLocation()
+
+        async void loadLocation()
         {
-            IsLoading = true;
+            await loadnear();
+            await loadbytag();
+            await loadbycreate();
+        }
+        async Task loadnear()
+        {
             ListLocationNear.Clear();
-            ListLocationByTag.Clear();
-            ListLocationUserCreate.Clear();
-            List<Models.Location> ListGet = await Task.Run(() => _locationService.GetIsShare());
-            await Task.Run(() =>
+            List<Models.Location> locationnear = await _locationService.GetNear(dataLogin.Instance.currUser.City, dataLogin.Instance.currUser.Dictrict);
+            if (locationnear.Count != 0)
             {
-                if(ListGet.Count > 0)
+                foreach (var location in locationnear.Take(5))
                 {
-                    foreach (var location in ListGet)
+                    Models.LocationItem model = new Models.LocationItem
                     {
-                        Models.LocationItem model = new Models.LocationItem();
-                        model.LocationCurrent = location;
-
-                        // Kiểm tra xem địa điểm này có nằm trong danh sách lưu trữ của người dùng hay không
-                        if (dataLogin.Instance.currUser.SaveStore != null)
+                        LocationCurrent = location
+                    };
+                    // Kiểm tra xem địa điểm này có nằm trong danh sách lưu trữ của người dùng hay không
+                    if (dataLogin.Instance.currUser.SaveStore != null)
+                    {
+                        if (dataLogin.Instance.currUser.SaveStore.Contains(location.Id))
                         {
-                            if (dataLogin.Instance.currUser.SaveStore.Contains(location.Id))
-                            {
-                                model.IsSave = true;
-                            }
-                        }
-                        // Thêm đối tượng LocationItem vào danh sách tương ứng
-                        if (location.Creator == dataLogin.Instance.currUser.Id)
-                        {
-                            if (ListLocationUserCreate.Count < 5)
-                            {
-                                ListLocationUserCreate.Add(model);
-                            }
-                        }
-                        else
-                        {
-                            if (location.Province == dataLogin.Instance.currUser.City)
-                            {
-                                if (ListLocationNear.Count < 5)
-                                {
-                                    ListLocationNear.Add(model);
-                                }
-                            }
-
-                            if (location.Tags.Any(value => dataLogin.Instance.currUser.Tags.Contains(value)))
-                            {
-                                if (ListLocationByTag.Count < 5)
-                                {
-                                    ListLocationByTag.Add(model);
-                                }
-                            }
+                            model.IsSave = true;
                         }
                     }
+                    ListLocationNear.Add(model);
                 }
-            });
-            IsLoading = false;
+            }
+        }
+        async Task loadbytag()
+        {
+            ListLocationByTag.Clear();
+            List<Models.Location> locationtag = await _locationService.GetByTag(dataLogin.Instance.currUser.Tags);
+            if (locationtag.Count != 0)
+            {
+                foreach (var location in locationtag.Take(5))
+                {
+                    Models.LocationItem model = new Models.LocationItem
+                    {
+                        LocationCurrent = location
+                    };
+                    // Kiểm tra xem địa điểm này có nằm trong danh sách lưu trữ của người dùng hay không
+                    if (dataLogin.Instance.currUser.SaveStore != null)
+                    {
+                        if (dataLogin.Instance.currUser.SaveStore.Contains(location.Id))
+                        {
+                            model.IsSave = true;
+                        }
+                    }
+                    ListLocationByTag.Add(model);
+                }
+            }
+        }
+        async Task loadbycreate()
+        {
+            ListLocationUserCreate.Clear();
+            List<Models.Location> locationcreate = await _locationService.GetCreate(dataLogin.Instance.currUser.Id);
+            if (locationcreate.Count != 0)
+            {
+                foreach (var location in locationcreate.Take(5))
+                {
+                    Models.LocationItem model = new Models.LocationItem
+                    {
+                        LocationCurrent = location
+                    };
+                    // Kiểm tra xem địa điểm này có nằm trong danh sách lưu trữ của người dùng hay không
+                    if (dataLogin.Instance.currUser.SaveStore != null)
+                    {
+                        if (dataLogin.Instance.currUser.SaveStore.Contains(location.Id))
+                        {
+                            model.IsSave = true;
+                        }
+                    }
+                    ListLocationUserCreate.Add(model);
+                }
+            }
         }
         public void loadImage()
         {
@@ -189,10 +204,7 @@ namespace homnayangiApp.ViewModels
             }
             else
             {
-                var imgt = Convert.FromBase64String(ImageByteUser);
-                MemoryStream stream = new(imgt);
-                ImageSource image = ImageSource.FromStream(() => stream);
-                ImageUserSource = image;
+                ImageUserSource = ImageByteUser;
             }
         }
     }

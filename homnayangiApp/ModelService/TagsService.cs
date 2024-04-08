@@ -1,4 +1,6 @@
 ﻿
+using Firebase.Database;
+using Firebase.Database.Query;
 using homnayangiApp.Models;
 using MongoDB.Driver;
 
@@ -6,38 +8,44 @@ namespace homnayangiApp.ModelService
 {
     public class TagsService : ITagsService
     {
-        private readonly IMongoCollection<Tags> _tags;
+        private readonly FirebaseClient _firebase;
         public TagsService() 
         {
-            string connectionUri = DataService.ConnectString;
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
-            MongoClient client = new MongoClient(settings);
-            var datebase = client.GetDatabase(DataService.DatabaseName);
-            _tags = datebase.GetCollection<Tags>(DataService.TagsCollection);
+            _firebase = new FirebaseClient(DataService.ConnectStringFirebase);
         }
-        public Tags Create(Tags tag)
+        public async Task<Tags> Create(Tags tag)
         {
-            throw new NotImplementedException();
-        }
-
-        public List<Tags> Get()
-        {
-            return _tags.Find(x => true).ToList();
+            var result = await _firebase.Child("tags").PostAsync(tag);
+            if (!String.IsNullOrEmpty(result.Key))
+            {
+                tag.Id = result.Key;
+                await Update(result.Key, tag);
+            }
+            return tag;
         }
 
-        public Tags Get(string id)
+        public async Task<List<Tags>> Get()
         {
-            return _tags.Find(x => x.Id == id).FirstOrDefault();
+            return (await _firebase.Child("tags").OnceAsync<Tags>()).Select(x => x.Object).ToList();
         }
 
-        public void Remove(string id)
+        public async Task<Tags> Get(string id)
         {
-            _tags.DeleteOne(x => x.Id == id);
+            var result = await _firebase.Child("tags").OnceAsync<Tags>();
+            var tag = result.Where(x => x.Object.Id == id).FirstOrDefault();
+            if (tag == null)
+                return null;
+            return tag.Object;
         }
 
-        public void Update(string id, Tags tag)
+        public async Task Remove(string id)
         {
-            _tags.ReplaceOne(x => x.Id == id, tag);
+            await _firebase.Child("tags").Child(id).DeleteAsync();
+        }
+
+        public async Task Update(string id, Tags tag)
+        {
+            await _firebase.Child("tags").Child(id).PutAsync(tag);
         }
     }
 }

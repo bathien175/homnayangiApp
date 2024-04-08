@@ -9,7 +9,7 @@ namespace homnayangiApp.ViewModels
     public class DetailLocationViewModel: BaseViewModel
     {
         private readonly ILocationService _locationService;
-        private ObservableCollection<string?> listImages = new ObservableCollection<string?>();
+        private ObservableCollection<string> listImages = new ObservableCollection<string>();
         private ObservableCollection<string> listTags = new ObservableCollection<string>();
         private Timer timer;
         private int currentIndex = 0;
@@ -18,7 +18,7 @@ namespace homnayangiApp.ViewModels
         private string address = string.Empty;
         private string type = string.Empty;
 
-        public ObservableCollection<string?> ListImages { get => listImages; set => SetProperty(ref listImages, value); }
+        public ObservableCollection<string> ListImages { get => listImages; set => SetProperty(ref listImages, value); }
         public Timer Timer { get => timer; set => SetProperty(ref timer, value); }
         public int CurrentIndex { get => currentIndex; set => SetProperty(ref currentIndex, value); }
         public ObservableCollection<string> ListTags { get => listTags; set => SetProperty(ref listTags, value); }
@@ -66,13 +66,9 @@ namespace homnayangiApp.ViewModels
                 {
                     Type = "Địa điểm có sẵn";
                 }
-                if (LocationCurr.LocationCurrent.Images == null)
+                if (LocationCurr.LocationCurrent.Images != null)
                 {
-                    ListImages.Add(null);
-                }
-                else
-                {
-                    ListImages = new ObservableCollection<string?>(LocationCurr.LocationCurrent.Images);
+                    ListImages = new ObservableCollection<string>(LocationCurr.LocationCurrent.Images);
                 }
                 if (ListImages.Count > 1)
                 {

@@ -11,8 +11,8 @@
              Title="Địa điểm đã lưu"
              NavigationPage.HasNavigationBar="False"
              x:DataType="viewmodel:SaveLocationViewModel"
-             IsBusy="{Binding IsLoading}">
-    <ContentPage.Resources>
+             >
+    <!--<ContentPage.Resources>
         <custom:ConvertMoney x:Key="MoneyConvert" />
         <custom:ConvertImageSource x:Key="ImageConvert" />
         <custom:ConvertTime x:Key="TimeConvert" />
@@ -33,7 +33,7 @@
                     BackgroundColor="Transparent"
                     HorizontalOptions="Start"
                     VerticalOptions="Center"
-                    Command="{Binding backPage}"/>
+                    />
             <Label Text="Danh sách yêu thích"
                     TextColor="{DynamicResource White}"
                     HorizontalOptions="Center"
@@ -50,7 +50,7 @@
                     VerticalOptions="Center"
                     />
         </Grid>
-        <CollectionView ItemsSource="{Binding ListLocat}"
+        <CollectionView 
                         Grid.Row="1"
                         Margin="20" >
             <CollectionView.ItemsLayout>
@@ -204,5 +204,5 @@
                 </StackLayout>
             </CollectionView.EmptyView>
         </CollectionView>
-    </Grid>
+    </Grid>-->
 </ContentPage>

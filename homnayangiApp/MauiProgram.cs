@@ -1,6 +1,8 @@
 ﻿using FFImageLoading.Maui;
 using homnayangiApp.ModelService;
 using homnayangiApp.ModelService.StoreSetting;
+using homnayangiApp.ViewModels;
+using homnayangiApp.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -28,17 +30,17 @@ namespace homnayangiApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFontAwesomeIconFonts();
                 });
-            //builder.Services.Configure<UserStoreDatabaseSettings>(options =>
-            //{
-            //    options.DatabaseName = builder.Configuration.GetSection("UserStoreDatabaseSettings:DatabaseName").Value;
-            //    options.ConnectionString = builder.Configuration.GetSection("UserStoreDatabaseSettings:ConnectionString").Value;
-            //    options.UserCoursesCollectionName = builder.Configuration.GetSection("UserStoreDatabaseSettings:UserCourseCollectionName").Value;
-            //});
-            //builder.Services.AddSingleton<IUserStoreDatabaseSettings>(x =>
-            //x.GetRequiredService<IOptions<UserStoreDatabaseSettings>>().Value);
-            //builder.Services.AddSingleton<IMongoClient>(u =>
-            //new MongoClient(builder.Configuration.GetSection("UserStoreDatabaseSettings:ConnectionString").Value.ToString()));
-            //builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddSingleton<LoginView>();
+            builder.Services.AddSingleton<SignInView>();
+            builder.Services.AddSingleton<SignInStep2View>();
+            builder.Services.AddSingleton<SignInStep3View>();
+            builder.Services.AddSingleton<SignInStep4View>();
+            builder.Services.AddSingleton<SignInStep5View>();
+            builder.Services.AddSingleton<AccountViewModel>();
+            builder.Services.AddSingleton<SignInViewModel>();
+            builder.Services.AddSingleton<SignInStep2ViewModel>();
+            builder.Services.AddSingleton<SignInStep3ViewModel>();
+            builder.Services.AddSingleton<SignInStep4ViewModel>();
             builder.Services.AddMopupsDialogs();
             builder.Services.AddScoped(sp => new HttpClient { });
 #if DEBUG

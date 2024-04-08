@@ -7,15 +7,17 @@ using homnayangiApp.Views;
 using Plugin.Media.Abstractions;
 using SkiaSharp;
 using System;
+using static FFImageLoading.Work.ImageInformation;
 
 namespace homnayangiApp.ViewModels
 {
     public class SignInStep2ViewModel : BaseViewModel
     {
-        private ImageSource imageSrc;
+        private ImageSource imageSrc = string.Empty;
         private string idUser = string.Empty;
         private string byteImage = string.Empty;
         private string errorID = string.Empty;
+        private bool isLoading = false;
         public ImageSource ImageSrc { get => imageSrc; set => SetProperty(ref imageSrc, value); }
 
         public DelegateCommand<string> ChangeImageCmd { get; }
@@ -69,6 +71,7 @@ namespace homnayangiApp.ViewModels
         }
 
         public string ErrorID { get => errorID; set => SetProperty(ref errorID, value); }
+        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
 
         public SignInStep2ViewModel()
         {
@@ -110,7 +113,6 @@ namespace homnayangiApp.ViewModels
                         imageformat = "image/jpg";
                     }
                     byte[] imageByte;
-                    var newFile = Path.Combine(FileSystem.CacheDirectory, mediaFile.FileName);
                     var stream = await mediaFile.OpenReadAsync();
                     using (MemoryStream memory = new MemoryStream())
                     {
@@ -120,11 +122,11 @@ namespace homnayangiApp.ViewModels
 
                     //converting to base64string
                     var convertedImage = Convert.ToBase64String(imageByte);
-                    var img = string.Format($"data:{imageformat};base64" + convertedImage);
-                    dataSignIn.Instance.userImageByte = img;
+                    var img = string.Format($"data:{imageformat};base64," + convertedImage);
+                    dataSignIn.Instance.userImageByte = convertedImage;
 
                     //converting from base64string to image
-                    var imgt = Convert.FromBase64String(img);
+                    var imgt = Convert.FromBase64String(convertedImage);
                     MemoryStream stream2 = new(imgt);
                     ImageSource image = ImageSource.FromStream(() => stream2);
                     ImageSrc = image;
@@ -135,17 +137,16 @@ namespace homnayangiApp.ViewModels
                 if (!MediaPicker.Default.IsCaptureSupported)
                 {
                     
-                    await Application.Current.MainPage.DisplayAlert("Oops!", "Error!", "OK");
+                    await Shell.Current.DisplayAlert("Lỗi", "Máy không hỗ trợ camera", "OK");
                     return;
                 }
 
                 try
                 {
-                    FileResult mediafile = await MediaPicker.Default.CapturePhotoAsync();
+                    var mediafile = await MediaPicker.Default.CapturePhotoAsync();
                     if (mediafile != null)
                     {
                         byte[] imageByte;
-                        var newFile = Path.Combine(FileSystem.CacheDirectory, mediafile.FileName);
                         var stream = await mediafile.OpenReadAsync();
                         using (MemoryStream memory = new MemoryStream())
                         {
@@ -155,10 +156,10 @@ namespace homnayangiApp.ViewModels
 
                         //converting to base64string
                         var convertedImage = Convert.ToBase64String(imageByte);
-                        var img = string.Format("data:image/png;base64"+ convertedImage);
-                        dataSignIn.Instance.userImageByte = img;
+                        var img = string.Format("data:img/png;base64,"+ convertedImage);
+                        dataSignIn.Instance.userImageByte = convertedImage;
                         //converting from base64string to image
-                        var imgt = Convert.FromBase64String(img);
+                        var imgt = Convert.FromBase64String(convertedImage);
                         MemoryStream stream2 = new(imgt);
                         ImageSource image = ImageSource.FromStream(() => stream2);
                         ImageSrc = image;
@@ -166,7 +167,7 @@ namespace homnayangiApp.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Oops!", "Error!", "OK");
+                    await Shell.Current.DisplayAlert("Oops!", "Error!", "OK");
                 }
             }
         }
@@ -174,26 +175,30 @@ namespace homnayangiApp.ViewModels
 
         private async void executeGoStep3CMD()
         {
+            IsLoading = true;
             //chọn ảnh
             if(ErrorID == string.Empty)
             {
                 if (IDUser.Length == 0)
                 {
                     ErrorID = "Không bỏ trống ID người dùng!";
+                    IsLoading = false;
                 }
                 else
                 {
                     IUserService u = new UserService();
-                    var find = u.FindIdUser(IDUser);
+                    var find = await u.Get(IDUser);
                     if (find != null)
                     {
                         ErrorID = "ID người dùng đã tồn tại! Vui lòng thử thay ID khác!";
+                        IsLoading = false;
                     }
                     else
                     {
                         ErrorID = string.Empty;
                         dataSignIn.Instance.userID = IDUser;
-                        await Application.Current.MainPage.Navigation.PushAsync(new SignInStep3View());
+                        IsLoading = false;
+                        await Shell.Current.GoToAsync("//SignInStep3");
                     }
                 }
             }
@@ -201,7 +206,7 @@ namespace homnayangiApp.ViewModels
         private async void executeBackStepCMD()
         {
             dataSignIn.Instance.userID = IDUser;
-            await Application.Current.MainPage.Navigation.PopAsync(true);
+            await Shell.Current.GoToAsync("//SignIn");
         }
     }
 }

@@ -67,10 +67,10 @@
                             <Frame WidthRequest="80"
                                                HeightRequest="80"
                                                Grid.Column="0">
-                                <Image Source="{Binding LocationCurrent.Images[0], Converter={StaticResource ImageConvert}}"
-                                                   WidthRequest="80"
-                                                   HeightRequest="80"
-                                                   Aspect="AspectFill"/>
+                                <Image Source="{Binding LocationCurrent.Images[0]}"
+                                       WidthRequest="80"
+                                       HeightRequest="80"
+                                       Aspect="AspectFill"/>
                             </Frame>
                             <Frame WidthRequest="25" 
                                    HeightRequest="25" 

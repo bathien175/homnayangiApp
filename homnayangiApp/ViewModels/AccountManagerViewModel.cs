@@ -5,17 +5,10 @@ using homnayangiApp.ModelService;
 using homnayangiApp.ModelService.StoreSetting;
 using homnayangiApp.ViewModels.Base;
 using homnayangiApp.Views;
-using SkiaSharp;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace homnayangiApp.ViewModels
 {
@@ -23,7 +16,8 @@ namespace homnayangiApp.ViewModels
     {
         private string textError = string.Empty;
         private readonly IUserService _userService;
-        private string? _imagestringUser;
+        private ImageSource? _imagestringUser;
+        private string imagestr = string.Empty;
         private User curentUser = new User();
         private string nameUser = string.Empty;
         private string genderUser = string.Empty;
@@ -107,7 +101,7 @@ namespace homnayangiApp.ViewModels
             IsLoading = true;
             IsExecuteCMD = true;
             var v = await Task.Run(() => new AccountManagerView());
-            await Application.Current.MainPage.Navigation.PushModalAsync(v);
+            await Shell.Current.Navigation.PushModalAsync(v);
             IsLoading = false;
             IsExecuteCMD = false;
         }
@@ -121,11 +115,11 @@ namespace homnayangiApp.ViewModels
             {
                 User u = CurentUser;
                 u.Password = GetMD5Hash(NewPass);
-                _userService.Update(u.Id,u);
+                await _userService.Update(u.Id,u);
                 dataLogin.Instance.currUser = u;
                 CurentUser = u;
-                await Application.Current.MainPage.DisplayAlert("Thành công","Đổi mật khẩu thành công","OK");
-                await Application.Current.MainPage.Navigation.PopAsync(true);
+                await Shell.Current.DisplayAlert("Thành công","Đổi mật khẩu thành công","OK");
+                await Shell.Current.Navigation.PopAsync(true);
             }
         }
 
@@ -136,11 +130,12 @@ namespace homnayangiApp.ViewModels
 
         private async void loadTag()
         {
-            await Task.Run(() =>
+            IsLoading = true;
+            await Task.Run(async () =>
             {
                 ListTag.Clear();
                 ITagsService _tags = new TagsService();
-                var a = _tags.Get();
+                var a = await _tags.Get();
                 if (a.Count > 0)
                 {
                     foreach (var item in a)
@@ -148,6 +143,7 @@ namespace homnayangiApp.ViewModels
                         ListTag.Add(item.Name);
                     }
                 }
+                IsLoading = false;
             });
         }
 
@@ -163,6 +159,7 @@ namespace homnayangiApp.ViewModels
             }
             else
             {
+                IsLoading = true;
                 TextError = string.Empty;
                 User u = new User();
                 u.Id = CurentUser.Id;
@@ -176,31 +173,37 @@ namespace homnayangiApp.ViewModels
                 u.Dictrict = DistrictUser;
                 u.SaveStore = CurentUser.SaveStore;
                 u.Tags = new List<string>(TagSelect);
-                u.ImageData = ImagestringUser;
+                if (!String.IsNullOrEmpty(Imagestr))
+                {
+                    var imgt = Convert.FromBase64String(Imagestr);
+                    MemoryStream stream2 = new(imgt);
+                    string im = await _userService.UploadUserImage(u.Id, stream2);
+                    u.ImageData = im;
+                }
+                else
+                {
+                    u.ImageData = dataLogin.Instance.currUser.ImageData;
+                }
                 try
                 {
-                    _userService.Update(u.Id, u);
+                    await _userService.Update(u.Id, u);
                     dataLogin.Instance.currUser = u;
                     CurentUser = u;
-                    await Application.Current.MainPage.DisplayAlert("Thành công","Cập nhật thông tin cá nhân thành công","OK");
+                    IsLoading = false;
+                    await Shell.Current.DisplayAlert("Thành công","Cập nhật thông tin cá nhân thành công","OK");
                 }
                 catch (Exception)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Thất bại", "Server xảy ra lỗi trong quá trình đọc dữ liệu", "Thử lại");
+                    IsLoading = false;
+                    await Shell.Current.DisplayAlert("Thất bại", "Server xảy ra lỗi trong quá trình đọc dữ liệu", "Thử lại");
                 }
             }
         }
 
         private void executeResetPicCMD()
         {
-            if (CurentUser.ImageData != null)
-            {
-                ImagestringUser = CurentUser.ImageData;
-            }
-            else
-            {
-                ImagestringUser = null;
-            }
+            loadImage();
+            Imagestr = string.Empty;
         }
 
         private async void executeChoosePicCMD()
@@ -209,27 +212,21 @@ namespace homnayangiApp.ViewModels
             if (mediaFile != null)
             {
                 string imageformat = string.Empty;
-                if (mediaFile.FileName.ToLower().Contains(".png"))
-                {
-                    imageformat = "image/png";
-                }
-                if (mediaFile.FileName.ToLower().Contains(".jpg"))
-                {
-                    imageformat = "image/jpg";
-                }
                 byte[] imageByte;
-                var newFile = Path.Combine(FileSystem.CacheDirectory, mediaFile.FileName);
                 var stream = await mediaFile.OpenReadAsync();
                 using (MemoryStream memory = new MemoryStream())
                 {
                     stream.CopyTo(memory);
                     imageByte = memory.ToArray();
                 }
+                var convertedImage = Convert.ToBase64String(imageByte);
+                Imagestr = convertedImage;
 
                 //converting to base64string
-                var convertedImage = Convert.ToBase64String(imageByte);
-                var img = string.Format($"data:{imageformat};base64" + convertedImage);
-                ImagestringUser = convertedImage;
+                var imgt = Convert.FromBase64String(convertedImage);
+                MemoryStream stream2 = new(imgt);
+                ImageSource image = ImageSource.FromStream(() => stream2);
+                ImagestringUser = image;
 
             }
         }
@@ -239,13 +236,13 @@ namespace homnayangiApp.ViewModels
             if (!MediaPicker.Default.IsCaptureSupported)
             {
 
-                await Application.Current.MainPage.DisplayAlert("Oops!", "Camera không được hỗ trợ!", "OK");
+                await Shell.Current.DisplayAlert("Oops!", "Camera không được hỗ trợ!", "OK");
                 return;
             }
 
             try
             {
-                FileResult mediafile = await MediaPicker.Default.CapturePhotoAsync();
+                var mediafile = await MediaPicker.Default.CapturePhotoAsync();
                 if (mediafile != null)
                 {
                     byte[] imageByte;
@@ -256,16 +253,19 @@ namespace homnayangiApp.ViewModels
                         stream.CopyTo(memory);
                         imageByte = memory.ToArray();
                     }
+                    var convertedImage = Convert.ToBase64String(imageByte);
+                    Imagestr = convertedImage;
 
                     //converting to base64string
-                    var convertedImage = Convert.ToBase64String(imageByte);
-                    var img = string.Format("data:image/png;base64" + convertedImage);
-                    ImagestringUser = convertedImage;
+                    var imgt = Convert.FromBase64String(convertedImage);
+                    MemoryStream stream2 = new(imgt);
+                    ImageSource image = ImageSource.FromStream(() => stream2);
+                    ImagestringUser = image;
                 }
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Oops!", "Error!", "OK");
+                await Shell.Current.DisplayAlert("Oops!", "Error!", "OK");
             }
         }
 
@@ -275,7 +275,7 @@ namespace homnayangiApp.ViewModels
         }
         private async void executeInfoBackPageCMD()
         {
-            await Application.Current.MainPage.Navigation.PopModalAsync(true);
+            await Shell.Current.GoToAsync("//HomeApp//Personal");
         }
         private async void executeSettingsCMD()
         {
@@ -291,11 +291,11 @@ namespace homnayangiApp.ViewModels
 
         private async void executeLogoutCMD()
         {
-            var result = await Application.Current.MainPage.DisplayAlert("Chờ đã", "Bạn thực sự muốn đăng xuất khỏi hệ thống chứ?", "Có", "Không");
+            var result = await Shell.Current.DisplayAlert("Chờ đã", "Bạn thực sự muốn đăng xuất khỏi hệ thống chứ?", "Có", "Không");
             if (result)
             {
                 dataLogin.Instance.currUser = new User();
-                Application.Current.MainPage = new NavigationPage(new LoginView());
+                await Shell.Current.GoToAsync("//Login");
             }
         }
         public string GetMD5Hash(string input)
@@ -338,7 +338,8 @@ namespace homnayangiApp.ViewModels
             }
             else
             {
-                ImagestringUser = null;
+                string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Images", "noimage.png");
+                ImagestringUser = ImageSource.FromFile(imagePath);
             }
         }
         void checkNewPass(string pass)
@@ -419,7 +420,7 @@ namespace homnayangiApp.ViewModels
             } 
         }
 
-        public string? ImagestringUser { get => _imagestringUser; set => SetProperty(ref _imagestringUser, value); }
+        public ImageSource? ImagestringUser { get => _imagestringUser; set => SetProperty(ref _imagestringUser, value); }
         public string TextError { get => textError; set => SetProperty(ref textError, value); }
         public string OldPass { get => oldPass; 
             set 
@@ -446,5 +447,6 @@ namespace homnayangiApp.ViewModels
         public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
         public List<string> ListGender { get => listGender; set => SetProperty(ref listGender, value); }
         public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
+        public string Imagestr { get => imagestr; set => SetProperty(ref imagestr, value); }
     }
 }

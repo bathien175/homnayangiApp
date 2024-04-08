@@ -10,6 +10,7 @@
              xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
              xmlns:busyIndicator="http://schemas.syncfusion.com/maui"
              NavigationPage.HasNavigationBar="False"
+             Appearing="ContentPage_Appearing"
              IsBusy="{Binding IsLoading}">
     <ContentPage.BindingContext>
         <viewmodel:AccountViewModel />
@@ -47,6 +48,7 @@
         <StackLayout Grid.Row="1" Spacing="10">
             <uranium:TextField BorderColor="White"
                                VerticalOptions="Center"
+                               x:Name="txtPhone"
                                TextColor="White"
                                Title="Số điện thoại"
                                TitleColor="{StaticResource Secondary}"
@@ -60,6 +62,7 @@
             </uranium:TextField>
             <uranium:TextField BorderColor="White" IsPassword="True"
                                VerticalOptions="Center"
+                               x:Name="txtPass"
                                TextColor="White"
                                Title="Mật khẩu "
                                TitleColor="{StaticResource Secondary}"
@@ -96,6 +99,7 @@
             </Grid>
             <Button StyleClass="FilledButton"
                     HeightRequest="50"
+                    TextColor="White"
                     Text="Đăng nhập"
                     TextTransform="Uppercase"
                     FontAttributes="Bold"

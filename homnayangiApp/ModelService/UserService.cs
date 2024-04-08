@@ -1,72 +1,84 @@
-﻿using homnayangiApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Firebase.Database;
+using Firebase.Database.Query;
+using homnayangiApp.Models;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using System.Security.Cryptography;
+using System.Text;
+using Firebase.Storage;
 
 namespace homnayangiApp.ModelService.StoreSetting
 {
     public class UserService : IUserService
     {
-        private readonly IMongoCollection<User> _user;
+        private readonly FirebaseClient _firebase;
 
-        //public UserService(IUserStoreDatabaseSettings settings, IMongoClient mongoClient) 
-        //{
-        //    var datebase = mongoClient.GetDatabase(settings.DatabaseName);
-        //    _user = datebase.GetCollection<User>(settings.UserCoursesCollectionName);
-        //}
         public UserService()
         {
-            string connectionUri = DataService.ConnectString;
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
-            MongoClient client = new MongoClient(settings);
-            var datebase = client.GetDatabase(DataService.DatabaseName);
-            _user = datebase.GetCollection<User>(DataService.UserCollection);
+            _firebase = new FirebaseClient(DataService.ConnectStringFirebase);
         }
-        public User Create(User user)
+        public async Task<User> Create(User user)
         {
-            _user.InsertOne(user);
+            var result = await _firebase.Child("users").PostAsync(user);
+            if (!String.IsNullOrEmpty(result.Key))
+            {
+                user.Id = result.Key;
+                if(user.ImageData!= null)
+                {
+                    byte[] imageBytes = Convert.FromBase64String(user.ImageData);
+                    MemoryStream stream = new MemoryStream(imageBytes);
+                    stream.Position = 0;
+                    user.ImageData = await UploadUserImage(user.Id,stream);
+                }
+                await Update(result.Key, user);
+            }
             return user;
         }
 
-        public List<User> Get()
+        public async Task<List<User>> Get()
         {
-            return _user.Find(x => true).ToList();
+            return (await _firebase.Child("users").OnceAsync<User>()).Select(x => x.Object).ToList();
         }
 
-        public User Get(string id)
+        public async Task<User> Get(string id)
         {
-            return _user.Find(x => x.Id == id).FirstOrDefault();
+            var result = await _firebase.Child("users").OnceAsync<User>();
+            var user = result.Where(x => x.Object.IDUser == id).FirstOrDefault();
+            if (user == null)
+                return null;
+            return user.Object;
         }
 
-        public User Login(string phone, string password)
+        public async Task<User> Login(string phone, string password)
         {
-            String pass = GetMD5Hash(password);
-            return _user.Find(x => x.Phone == phone && 
-            x.Password == pass).FirstOrDefault();
+            String hashedPassword = GetMD5Hash(password);
+            var users = await _firebase.Child("users").OnceAsync<User>();
+            var result = users.Where(x => x.Object.Phone == phone && x.Object.Password == hashedPassword).FirstOrDefault();
+            if (result == null)
+                return null;
+            return result.Object;
         }
 
-        public void Remove(string id)
+        public async Task Remove(string id)
         {
-            _user.DeleteOne(x => x.Id == id);
+            await _firebase.Child("users").Child(id).DeleteAsync();
         }
 
-        public void RestorePassword(string phone)
+        public async Task RestorePassword(string phone)
         {
-            var u = _user.Find(x => x.Phone == phone).FirstOrDefault();
-            if (u != null)
+            var users = (await _firebase.Child("users").OnceAsync<User>());
+            var user = users.Where(x => x.Object.Phone == phone).FirstOrDefault();
+            if (user != null)
             {
+                var u = user.Object;
                 u.Password = GetMD5Hash("1");
-                _user.ReplaceOne(x => x.Id == u.Id, u);
+                await _firebase.Child("users").Child(user.Key).PutAsync(JsonConvert.SerializeObject(u));
             }
         }
 
-        public void Update(string id, User user)
+        public async Task Update(string id, User user)
         {
-            _user.ReplaceOne(x => x.Id == id, user);
+            await _firebase.Child("users").Child(id).PutAsync(user);
         }
         public string GetMD5Hash(string input)
         {
@@ -86,14 +98,36 @@ namespace homnayangiApp.ModelService.StoreSetting
             }
         }
 
-        public User GetbyPhone(string phone)
+        public async Task<User> GetbyPhone(string phone)
         {
-            return _user.Find(x => x.Phone == phone).FirstOrDefault();
+            var result = (await _firebase.Child("users")
+                .OrderByKey()
+                .OnceAsync<User>()).Select(x => x.Object);
+
+            var u = result.Where(x => x.Phone == phone).FirstOrDefault();
+            return u;
         }
 
-        public User FindIdUser(string id)
+        public async Task<string> UploadUserImage(string userId, Stream imageStream)
         {
-            return _user.Find(x => x.IDUser == id).FirstOrDefault();
+            try
+            {
+                var task = new FirebaseStorage(DataService.ConnectStringFirebaseStorage, new FirebaseStorageOptions
+                {
+                    ThrowOnCancel = true,
+                })
+                    .Child("user_images")
+                    .Child(userId)
+                    .Child("avatarImage.jpg")
+                    .PutAsync(imageStream);
+
+                var downloadlink = await task;
+                return downloadlink;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

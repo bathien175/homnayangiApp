@@ -15,10 +15,12 @@ namespace homnayangiApp.ViewModels
     public class SignInStep4ViewModel : BaseViewModel
     {
         private readonly IUserService _userService;
+        private bool isLoading = false;
         private List<tagControl> listTag = new List<tagControl>();
         public List<tagControl> ListTag { get => listTag; set => SetProperty(ref listTag, value); }
         public DelegateCommand GoStep5Cmd { get; }
         public DelegateCommand BackStepCmd { get; }
+        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
 
         public SignInStep4ViewModel()
         {
@@ -33,9 +35,10 @@ namespace homnayangiApp.ViewModels
             //Điền tag
             if (ListTag.Where(x => x.IsChecked == true).Count() <= 5 && ListTag.Where(x => x.IsChecked == true).Count() > 0)
             {
-                var a = await Application.Current.MainPage.DisplayAlert("Xác nhận", "Bạn có chắc chắn với các thông tin tài khoản chứ?", "Có", "Không");
+                var a = await Shell.Current.DisplayAlert("Xác nhận", "Bạn có chắc chắn với các thông tin tài khoản chứ?", "Có", "Không");
                 if (a)
                 {
+                    IsLoading = true;
                     User u = new User();
                     u.IDUser = dataSignIn.Instance.userID;
                     u.Phone = dataSignIn.Instance.userPhone;
@@ -53,19 +56,21 @@ namespace homnayangiApp.ViewModels
 
                     try
                     {
-                        _userService.Create(u);
+                        await _userService.Create(u);
                         dataSignIn.Instance.clearData();
-                        await Application.Current.MainPage.Navigation.PushModalAsync(new SignInStep5View());
+                        await Shell.Current.GoToAsync("//SignInStep5");
+                        IsLoading = false;
                     }
                     catch (Exception ex)
                     {
-                        await Application.Current.MainPage.DisplayAlert("Lỗi", "Server đã xảy ra lỗi phản hồi", "Thử lại");
+                        await Shell.Current.DisplayAlert("Lỗi", "Server đã xảy ra lỗi phản hồi", "Thử lại");
+                        IsLoading = false;
                     }
                 }
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Lỗi", "Chọn ít nhất 1 TAG và tối đa 5 TAG", "Đã hiểu");
+                await Shell.Current.DisplayAlert("Lỗi", "Chọn ít nhất 1 TAG và tối đa 5 TAG", "Đã hiểu");
             }
         }
 
@@ -74,7 +79,7 @@ namespace homnayangiApp.ViewModels
         {
             List<tagControl> listnew = ListTag.Where(x => x.IsChecked == true).ToList();
             dataSignIn.Instance.listTag = listnew;
-            await Application.Current.MainPage.Navigation.PopAsync();
+            await Shell.Current.GoToAsync("//SignInStep3");
         }
         private void checkTag()
         {
@@ -92,18 +97,19 @@ namespace homnayangiApp.ViewModels
             }
         }
         #region loaddata
-        private void loadTag()
+        private async void loadTag()
         {
-            ListTag.Clear();
+            List<tagControl> listnew = [];
             ITagsService _tags = new TagsService();
-            var a = _tags.Get();
+            var a = await _tags.Get();
             if (a.Count > 0)
             {
                 foreach (var item in a)
                 {
-                    ListTag.Add(new tagControl() { TagName = item.Name });
+                    listnew.Add(new tagControl() { TagName = item.Name });
                 }
             }
+            ListTag = listnew;
         }
         #endregion
         public string GetMD5Hash(string input)

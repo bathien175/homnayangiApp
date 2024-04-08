@@ -20,6 +20,7 @@ namespace homnayangiApp.ViewModels
         private ObservableCollection<FindUserModel> listFull = new ObservableCollection<FindUserModel>();
         private ObservableCollection<FindUserModel> listFilter = new ObservableCollection<FindUserModel>();
         private string textFilter = String.Empty;
+        private bool isLoading = false;
 
         public ObservableCollection<FindUserModel> ListFull { get => listFull; set => SetProperty(ref listFull, value); }
         public ObservableCollection<FindUserModel> ListFilter { get => listFilter; set => SetProperty(ref listFilter, value); }
@@ -32,6 +33,7 @@ namespace homnayangiApp.ViewModels
         }
         public DelegateCommand<string> restoreCMD { get; }
         public DelegateCommand BackToLoginCmd { get; }
+        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
 
         public ForgotPasswordViewModel()
         {
@@ -43,13 +45,14 @@ namespace homnayangiApp.ViewModels
 
         private async void executeBackToLoginCMD()
         {
-            await Application.Current.MainPage.Navigation.PopAsync(true);
+            await Shell.Current.GoToAsync("//Login");
         }
 
-        private void loadData()
+        private async void loadData()
         {
-            ListFull.Clear();
-            var l = _userService.Get();
+            IsLoading = true;
+            ObservableCollection<FindUserModel> listnew = [];
+            var l = await _userService.Get();
             if (l.Count > 0)
             {
                 foreach (var item in l)
@@ -60,30 +63,36 @@ namespace homnayangiApp.ViewModels
                     model.PhoneFakeUser = MaskPhoneNumber(item.Phone);
                     model.ImageString = item.ImageData;
                     model.RestorePassword = restoreCMD;
-                    ListFull.Add(model);
+                    listnew.Add(model);
                 }
             }
+            ListFull = listnew;
+            IsLoading = false;
         }
 
         private async void executeRestoreCMD(string sdt)
         {
-            var result = await Application.Current.MainPage.DisplayTextPromptAsync("Xác nhận số điện thoại!", "Vui lòng nhập đúng với số điện thoại bạn đã đăng ký", placeholder: "VD: 0987654321");
+            var result = await Shell.Current.DisplayTextPromptAsync("Xác nhận số điện thoại!", "Vui lòng nhập đúng với số điện thoại bạn đã đăng ký", placeholder: "VD: 0987654321");
             if (result == sdt)
             {
+                IsLoading = true;
                 try
                 {
-                    _userService.RestorePassword(sdt);
-                    await Application.Current.MainPage.DisplayAlert("Chúc mừng", "Phục hồi mật khẩu thành công, Bạn có thể tiến hành đăng nhập lại", "OK");
-                    await Application.Current.MainPage.Navigation.PopAsync(true);
+                    await _userService.RestorePassword(sdt);
+                    await Shell.Current.DisplayAlert("Chúc mừng", "Phục hồi mật khẩu thành công, Bạn có thể tiến hành đăng nhập lại", "OK");
+                    IsLoading = false;
+                    await Shell.Current.Navigation.PopAsync(true);
                 }
                 catch (Exception)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Thất bại", "Server không có phản hồi!", "OK");
+                    await Shell.Current.DisplayAlert("Thất bại", "Server không có phản hồi!", "OK");
+                    IsLoading = false;
                 }
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Thất bại", "Số điện thoại không trùng khớp!", "OK");
+                await Shell.Current.DisplayAlert("Thất bại", "Số điện thoại không trùng khớp!", "OK");
+                IsLoading = false;
             }
         }
         private void loadFilter(string s)

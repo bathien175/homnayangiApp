@@ -9,6 +9,7 @@
              xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
              xmlns:custom="clr-namespace:homnayangiApp.CustomControls"
              xmlns:blur="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              Background="White"
              Appearing="ContentPage_Appearing"
              NavigationPage.HasNavigationBar="False"
@@ -70,12 +71,14 @@
                     <Border.Shadow>
                         <Shadow Brush="{StaticResource Primary}" />
                     </Border.Shadow>
-                    <Image Source="{Binding ImageUserSource}" 
-                        Aspect="AspectFill"
-                        HeightRequest="50"
-                        WidthRequest="50"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"/>
+                    <ffimage:CachedImage Source="{Binding ImageUserSource}" 
+                                         Aspect="AspectFill"
+                                         HeightRequest="50"
+                                         WidthRequest="50"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center" 
+                                         FadeAnimationEnabled="True" 
+                                         FadeAnimationDuration="1"/>
                 </Border>
             </Grid>
             <Label
@@ -187,10 +190,12 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="60"/>
                                     </Grid.RowDefinitions>
-                                    <Image Source="{Binding LocationCurrent.Images[0], Converter={StaticResource ImageConvert}}"
-                                               Aspect="AspectFill"
-                                               Grid.Row="0" 
-                                               Margin="0"/>
+                                    <ffimage:CachedImage Source="{Binding LocationCurrent.Images[0]}"
+                                                         FadeAnimationEnabled="True"
+                                                         FadeAnimationDuration="1"
+                                                         Aspect="AspectFill"
+                                                         Grid.Row="0" 
+                                                         Margin="0"/>
                                     <Grid Grid.Row="0" 
                                               HorizontalOptions="Start" 
                                               VerticalOptions="Start"
@@ -378,7 +383,7 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="60"/>
                                     </Grid.RowDefinitions>
-                                    <Image Source="{Binding LocationCurrent.Images[0], Converter={StaticResource ImageConvert}}"
+                                    <Image Source="{Binding LocationCurrent.Images[0]}"
                                                Aspect="AspectFill"
                                                Grid.Row="0" 
                                                Margin="0"/>
@@ -560,7 +565,7 @@
                                     <Frame WidthRequest="80"
                                                HeightRequest="80"
                                                Grid.Column="0">
-                                        <Image Source="{Binding LocationCurrent.Images[0], Converter={StaticResource ImageConvert}}"
+                                        <Image Source="{Binding LocationCurrent.Images[0]}"
                                                    WidthRequest="80"
                                                    HeightRequest="80"
                                                    Aspect="AspectFill"/>

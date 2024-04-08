@@ -17,6 +17,7 @@ namespace homnayangiApp.ViewModels
         private string provinceSelect = string.Empty;
         private string genderSelect = dataSignIn.Instance.userGender;
         private DateTime datebirth = DateTime.Today.Date;
+        private bool isLoading = false;
 
 
         public List<Province> ListCity { get => listCity; set => SetProperty(ref listCity, value); }
@@ -40,6 +41,7 @@ namespace homnayangiApp.ViewModels
         public DelegateCommand selectCityCmd { get; }
         public DelegateCommand selectDistricCmd { get; }
         public DelegateCommand appearView { get; }
+        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
 
         public SignInStep3ViewModel()
         {
@@ -65,13 +67,15 @@ namespace homnayangiApp.ViewModels
         private async void executeGoStep4CMD()
         {
             //Điền thông tin cá nhân
+            IsLoading = true;
             saveData();
-            await Application.Current.MainPage.Navigation.PushAsync(new SignInStep4View());
+            IsLoading = false;
+            await Shell.Current.GoToAsync("//SignInStep4");
         }
         private async void executeBackStepCMD()
         {
             saveData();
-            await Application.Current.MainPage.Navigation.PopAsync();
+            await Shell.Current.GoToAsync("//SignInStep3");
         }
         void saveData()
         {

@@ -13,6 +13,7 @@ public partial class PersonalView : ContentPage
 
     private void ContentPage_Appearing(object sender, EventArgs e)
     {
-        BindingContext = new AccountManagerViewModel();
+		var vm = (AccountManagerViewModel)BindingContext;
+		vm.CurentUser = dataLogin.Instance.currUser;
     }
 }

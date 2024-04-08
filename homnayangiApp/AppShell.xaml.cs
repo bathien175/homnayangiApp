@@ -8,6 +8,7 @@ namespace homnayangiApp
         {
             InitializeComponent();
             Routing.RegisterRoute("listLocation", typeof(ListLocationView));
+            Routing.RegisterRoute(nameof(AdminAddLocationView), typeof(AdminAddLocationView));
         }
     }
 }

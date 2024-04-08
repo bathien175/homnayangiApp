@@ -11,8 +11,7 @@ namespace homnayangiApp
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             var vm = (ViewModels.MainPageViewModel)BindingContext;
-            vm.loadImage();
-            vm.loadLocation();
+            vm.loadData();
         }
     }
 

@@ -41,7 +41,7 @@
                     StrokeThickness="3"
                     VerticalOptions="Center"
                     WidthRequest="100">
-                    <Image Source="{Binding ImagestringUser, Converter={StaticResource ImageConvert}}" 
+                    <Image Source="{Binding ImagestringUser}" 
                         Aspect="AspectFill"
                         HeightRequest="100"
                         WidthRequest="100"

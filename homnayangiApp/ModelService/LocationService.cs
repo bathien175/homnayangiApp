@@ -1,73 +1,123 @@
-﻿using MongoDB.Driver;
+﻿using Firebase.Database;
+using Firebase.Database.Query;
+using Firebase.Storage;
+using MongoDB.Driver;
 using System.Linq;
 
 namespace homnayangiApp.ModelService
 {
     public class LocationService : ILocationService
     {
-        private readonly IMongoCollection<Models.Location> _location;
+        private readonly FirebaseClient _firebase;
 
         public LocationService()
         {
-            string connectionUri = DataService.ConnectString;
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
-            MongoClient client = new MongoClient(settings);
-            var datebase = client.GetDatabase(DataService.DatabaseName);
-            _location = datebase.GetCollection<Models.Location>(DataService.LocationCollection);
+            _firebase = new FirebaseClient(DataService.ConnectStringFirebase);
         }
-        public Models.Location Create(Models.Location location)
+        public async Task<Models.Location> Create(Models.Location location)
         {
-            _location.InsertOne(location);
+            var result = await _firebase.Child("locations").PostAsync(location);
+            if (!String.IsNullOrEmpty(result.Key))
+            {
+                location.Id = result.Key;
+                int index = 1;
+                if (location.Images != null)
+                {
+                    List<string> strings = [];
+                    foreach (var item in location.Images)
+                    {
+                        byte[] imageBytes = Convert.FromBase64String(item);
+                        MemoryStream stream = new MemoryStream(imageBytes);
+                        stream.Position = 0;
+                        string s = await UploadLocationImage(location.Id, index, stream);
+                        strings.Add(s);
+                        index++;
+                    }
+                    location.Images = strings;
+                }
+                await Update(result.Key, location);
+            }
             return location;
         }
 
-        public List<Models.Location> Get()
+        public async Task<List<Models.Location>> Get()
         {
-            return _location.Find(x => true).ToList();
+            return (await _firebase.Child("locations").OnceAsync<Models.Location>()).Select(x => x.Object).ToList();
         }
-        public List<Models.Location> GetIsShare()
+        public async Task<List<Models.Location>> GetIsShare()
         {
-            return _location.Find(x => x.IsShare == true).ToList();
+            return (await _firebase.Child("locations").OnceAsync<Models.Location>()).Select(x => x.Object).Where(x => x.IsShare == true && x.Creator == null).ToList();
         }
-        public Models.Location Get(string id)
+        public async Task<Models.Location> Get(string id)
         {
-            return _location.Find(x => x.Id == id).FirstOrDefault();
-        }
-
-        public List<Models.Location> GetByTag(List<string> listtag)
-        {
-
-            var filter = Builders<Models.Location>.Filter.AnyIn("tags", listtag);
-            var result = _location.Find(filter).ToList();
-            return result;
+            var result = await _firebase.Child("locations").OnceAsync<Models.Location>();
+            var lot = result.Where(x => x.Object.Id == id).FirstOrDefault();
+            if (lot == null)
+                return null;
+            return lot.Object;
         }
 
-        public List<Models.Location> GetCreate(string id)
+        public async Task<List<Models.Location>> GetByTag(List<string> listtag)
         {
-            var s = _location.Find(x => x.Creator == id).ToList();
-            return s;
+            return (await _firebase.Child("locations").OnceAsync<Models.Location>())
+                .Select(x => x.Object)
+                .Where(x => x.Creator == null && x.IsShare == true && x.Tags.Any(tag => listtag.Contains(tag)))
+                .ToList();
         }
 
-        public List<Models.Location> GetNear(string province, string district)
+        public async Task<List<Models.Location>> GetCreate(string id)
         {
-            var listcity = _location.Find(x => x.IsShare == true && x.Creator == null && x.Province == province).ToList();
-            var listdistrict = listcity.OrderBy(x => x.District == district).ToList();
-            return listdistrict;
+            return (await _firebase.Child("locations").OnceAsync<Models.Location>())
+                .Select(x => x.Object)
+                .Where(x => x.Creator == id)
+                .ToList();
         }
 
-        public void Remove(string id)
+        public async Task<List<Models.Location>> GetNear(string province, string district)
         {
-            _location.DeleteOne(x => x.Id == id);
+            return (await _firebase.Child("locations").OnceAsync<Models.Location>())
+                .Select(x => x.Object)
+                .Where(x => x.Creator == null && x.Province == province)
+                .ToList();
         }
 
-        public List<Models.Location> Search(string name)
+        public async Task Remove(string id)
         {
-            return _location.Find(x => x.Name.Contains(name)).ToList();
+            await _firebase.Child("locations").Child(id).DeleteAsync();
         }
 
-        public void Update(string id, Models.Location location)
+        public async Task<List<Models.Location>> Search(string name)
         {
-            _location.ReplaceOne(x => x.Id == id, location);
+            return (await _firebase.Child("locations").OnceAsync<Models.Location>())
+                .Select(x => x.Object)
+                .Where(x => x.Creator == null && x.Name.Contains(name))
+                .ToList();
+        }
+
+        public async Task Update(string id, Models.Location location)
+        {
+            await _firebase.Child("locations").Child(id).PutAsync(location);
+        }
+        public async Task<string> UploadLocationImage(string locateId,int index, Stream imageStream)
+        {
+            try
+            {
+                var task = new FirebaseStorage(DataService.ConnectStringFirebaseStorage, new FirebaseStorageOptions
+                {
+                    ThrowOnCancel = true,
+                })
+                    .Child("location_images")
+                    .Child(locateId)
+                    .Child($"Image{index}.jpg")
+                    .PutAsync(imageStream);
+
+                var downloadlink = await task;
+                return downloadlink;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

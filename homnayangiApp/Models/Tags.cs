@@ -1,20 +1,9 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace homnayangiApp.Models
+﻿namespace homnayangiApp.Models
 {
     public class Tags
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = String.Empty;
 
-        [BsonElement("name")]
         public string Name { get; set; } = String.Empty;
     }
 }

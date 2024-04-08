@@ -8,15 +8,16 @@ namespace homnayangiApp.ModelService
 {
     public interface ILocationService
     {
-        List<Models.Location> Get();
-        List<Models.Location> GetIsShare();
-        List<Models.Location> GetNear(string province, string district);
-        List<Models.Location> GetCreate(string id);
-        List<Models.Location> GetByTag(List<String> listtag);
-        List<Models.Location> Search(string name);
-        Models.Location Get(string id);
-        Models.Location Create(Models.Location location);
-        void Update(string id, Models.Location location);
-        void Remove(string id);
+        Task<List<Models.Location>> Get();
+        Task<List<Models.Location>> GetIsShare();
+        Task<List<Models.Location>> GetNear(string province, string district);
+        Task<List<Models.Location>> GetCreate(string id);
+        Task<List<Models.Location>> GetByTag(List<String> listtag);
+        Task<List<Models.Location>> Search(string name);
+        Task<Models.Location> Get(string id);
+        Task<Models.Location> Create(Models.Location location);
+        Task Update(string id, Models.Location location);
+        Task Remove(string id);
+        Task<string> UploadLocationImage(string userId, int index, Stream imageStream);
     }
 }

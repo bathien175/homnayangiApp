@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "609085841331",
+    "project_id": "homnayangi-ed618",
+    "storage_bucket": "homnayangi-ed618.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609085841331:android:04694177c4596038b735c6",
+        "android_client_info": {
+          "package_name": "com.thienstyle.homnayangi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqTFbnWiUh-w2mz8RIExrK3oB15tLW5vs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

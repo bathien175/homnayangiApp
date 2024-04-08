@@ -74,7 +74,7 @@
                     <Border.Shadow>
                         <Shadow Brush="{StaticResource Primary}" />
                     </Border.Shadow>
-                    <Image Source="{Binding ImagestringUser, Converter={StaticResource ImageConvert}}" 
+                    <Image Source="{Binding ImagestringUser}" 
                             Aspect="AspectFill"
                             HeightRequest="80"
                             WidthRequest="80"
@@ -237,7 +237,7 @@
                     </Grid.GestureRecognizers>
                 </Grid>
             </Border>
-            <Label Text="Xây dựng bởi: Lê Tuấn Kiệt  ,  Phiên bản: V1.0.1"
+            <Label Text="Xây dựng bởi: Lê Tuấn Kiệt  ,  Phiên bản: V1.2.1"
                    Margin="20,50,0,0"
                    FontSize="Micro"
                    TextColor="Black"

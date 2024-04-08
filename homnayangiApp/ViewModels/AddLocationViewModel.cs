@@ -28,6 +28,7 @@ namespace homnayangiApp.ViewModels
         private string address = string.Empty;
         private bool isEmpty = false;
         private string nameLocation = string.Empty;
+        private bool isLoading = false;
 
         public List<string> ListImageString { get => listImageString; 
             set 
@@ -160,17 +161,23 @@ namespace homnayangiApp.ViewModels
             }else if (TagSelect.Count >10)
             {
                 await Application.Current.MainPage.DisplayAlert("Thất bại!", "Chỉ được chọn tối đa 10 Tags!", "OK");
-            }
+            }else if(ListImageString.Count() == 0)
+            {
+                await Application.Current.MainPage.DisplayAlert("Thất bại!", "Hãy chọn ít nhất 1 tấm ảnh", "OK");
+            } 
             else
             {
+                IsLoading = true;
                 try
                 {
-                    Models.Location l = new Models.Location();
-                    l.Name = NameLocation;
-                    l.HotLine = Phone;
-                    l.Address = Address;
-                    l.Province = CitySelect;
-                    l.District = DistrictSelect;
+                    Models.Location l = new Models.Location
+                    {
+                        Name = NameLocation,
+                        HotLine = Phone,
+                        Address = Address,
+                        Province = CitySelect,
+                        District = DistrictSelect
+                    };
                     if (IsOpen24H)
                     {
                         l.IsOpen24H = true;
@@ -203,12 +210,14 @@ namespace homnayangiApp.ViewModels
                     }
                     l.Tags = new List<String>(TagSelect);
                     l.IsShare = true;
-                    _locationService.Create(l);
+                    await _locationService.Create(l);
                     await Application.Current.MainPage.DisplayAlert("Thành công!", "Tạo địa điểm mới thành công!", "OK");
+                    IsLoading = false;
                 }
                 catch (Exception)
                 {
                     await Application.Current.MainPage.DisplayAlert("Thất bại!", "Server xảy ra lỗi! Không thể ghi dữ liệu!", "Thử lại");
+                    IsLoading = false;
                 }
             }
         }
@@ -217,12 +226,13 @@ namespace homnayangiApp.ViewModels
         public DelegateCommand ChooseImageCMD { get; }
         public DelegateCommand<string> removeImage { get; }
         public string NameLocation { get => nameLocation; set => SetProperty(ref nameLocation, value) ; }
+        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
 
-        private void loadTag()
+        private async void loadTag()
         {
             ListTag.Clear();
             ITagsService _tags = new TagsService();
-            var a = _tags.Get();
+            var a = await _tags.Get();
             if (a.Count > 0)
             {
                 foreach (var item in a)

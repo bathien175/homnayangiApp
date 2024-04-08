@@ -8,8 +8,10 @@
              xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
              xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              xmlns:custom ="clr-namespace:homnayangiApp.CustomControls" 
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             IsBusy="{Binding IsLoading}">
     <ContentPage.BindingContext>
         <viewmodel:SignInStep2ViewModel />
     </ContentPage.BindingContext>
@@ -76,7 +78,7 @@
                     <Border.Shadow>
                         <Shadow Brush="{StaticResource Primary}" />
                     </Border.Shadow>
-                    <Image Source="{Binding ImageSrc}" 
+                    <ffimage:SvgCachedImage Source="{Binding ImageSrc}" 
                            Aspect="AspectFill"
                            x:Name="imgAvatar"
                            HeightRequest="250"

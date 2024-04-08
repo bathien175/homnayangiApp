@@ -33,7 +33,7 @@
                                   Loop="true" IsBounceEnabled="True">
                         <CarouselView.ItemTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding ., Converter={StaticResource ImageConvert}}" Aspect="AspectFill"/>
+                                <Image Source="{Binding .}" Aspect="AspectFill"/>
                             </DataTemplate>
                         </CarouselView.ItemTemplate>
                         <CarouselView.IndicatorView>

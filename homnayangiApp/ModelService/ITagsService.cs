@@ -9,10 +9,10 @@ namespace homnayangiApp.ModelService
 {
     public interface ITagsService
     {
-        List<Tags> Get();
-        Tags Get(string id);
-        Tags Create(Tags tag);
-        void Update(string id, Tags tag);
-        void Remove(string id);
+        Task<List<Tags>> Get();
+        Task<Tags> Get(string id);
+        Task<Tags> Create(Tags tag);
+        Task Update(string id, Tags tag);
+        Task Remove(string id);
     }
 }

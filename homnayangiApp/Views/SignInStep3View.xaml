@@ -9,7 +9,9 @@
              xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
              xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
              xmlns:custom ="clr-namespace:homnayangiApp.CustomControls"
-             NavigationPage.HasNavigationBar="False">
+             x:DataType="viewmodel:SignInStep3ViewModel"
+             NavigationPage.HasNavigationBar="False"
+             IsBusy="{Binding IsLoading}">
     <ContentPage.Background>
         <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
             <GradientStop Color="{StaticResource Primary}" Offset="0"/>
