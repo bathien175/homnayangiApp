@@ -10,11 +10,9 @@
              xmlns:viewmodel="clr-namespace:homnayangiApp.ViewModels"
              xmlns:custom="clr-namespace:homnayangiApp.CustomControls"
              NavigationPage.HasNavigationBar="False"
+             x:DataType="viewmodel:AccountManagerViewModel"
              Appearing="ContentPage_Appearing"
              IsBusy="{Binding IsLoading}">
-    <ContentPage.BindingContext>
-        <viewmodel:AccountManagerViewModel />
-    </ContentPage.BindingContext>
     <ContentPage.Resources>
         <custom:ConvertImageSource x:Key="ImageConvert" />
     </ContentPage.Resources>

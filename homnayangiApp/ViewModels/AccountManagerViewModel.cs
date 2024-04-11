@@ -98,8 +98,8 @@ namespace homnayangiApp.ViewModels
         {
             if (IsExecuteCMD == true)
                 return;
-            IsLoading = true;
             IsExecuteCMD = true;
+            IsLoading = true;
             var v = await Task.Run(() => new AccountManagerView());
             await Shell.Current.Navigation.PushModalAsync(v);
             IsLoading = false;
@@ -119,15 +119,22 @@ namespace homnayangiApp.ViewModels
                 dataLogin.Instance.currUser = u;
                 CurentUser = u;
                 await Shell.Current.DisplayAlert("Thành công","Đổi mật khẩu thành công","OK");
-                await Shell.Current.Navigation.PopAsync(true);
+                await Shell.Current.Navigation.PopModalAsync(true);
             }
         }
 
         private async void executeGotoChangePassCMD()
         {
-            await Shell.Current.Navigation.PushAsync(new ChangePasswordView());
+            if (IsExecuteCMD == true)
+                return;
+            IsExecuteCMD = true;
+            IsLoading = true;
+            var v = await Task.Run(() => new ChangePasswordView());
+            await Shell.Current.Navigation.PushModalAsync(v);
+            IsLoading = false;
+            IsExecuteCMD = false;
         }
-
+        
         private async void loadTag()
         {
             IsLoading = true;
@@ -271,11 +278,11 @@ namespace homnayangiApp.ViewModels
 
         private async void executeBackPageCMD()
         {
-            await Shell.Current.Navigation.PopAsync(true);
+           await Shell.Current.Navigation.PopModalAsync(true);
         }
         private async void executeInfoBackPageCMD()
         {
-            await Shell.Current.GoToAsync("//HomeApp//Personal");
+            await Shell.Current.Navigation.PopModalAsync(true);
         }
         private async void executeSettingsCMD()
         {

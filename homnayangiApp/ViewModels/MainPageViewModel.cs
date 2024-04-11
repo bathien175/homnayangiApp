@@ -85,27 +85,32 @@ namespace homnayangiApp.ViewModels
                 return;
 
             IsExecuteCMD = true;
-            IsLoading = true;
             int obj = Convert.ToInt32(objs);
             switch (obj)
             {
                 case 0:
-                    var vm = await Task.Run(() => new ListLocationViewModel() { Mode = 0 });
-                    await Application.Current.MainPage.Navigation.PushModalAsync(new ListLocationView() { BindingContext = vm });
-                    IsExecuteCMD = false;
+                    IsLoading = true;
+                    var v = await Task.Run(() => new ListLocationView()); 
+                    await Shell.Current.Navigation.PushModalAsync(v);
+                    v.LoadData(0);
                     IsLoading = false;
+                    IsExecuteCMD = false;
                     break;
                 case 1:
-                    var vm1 = await Task.Run(() => new ListLocationViewModel() { Mode = 1 });
-                    await Application.Current.MainPage.Navigation.PushModalAsync(new ListLocationView() { BindingContext = vm1 });
-                    IsExecuteCMD = false;
+                    IsLoading = true;
+                    var v1 = await Task.Run(() => new ListLocationView());
+                    await Shell.Current.Navigation.PushModalAsync(v1);
+                    v1.LoadData(1);
                     IsLoading = false;
+                    IsExecuteCMD = false;
                     break;
                 case 2:
-                    var vm2 = await Task.Run(() => new ListLocationViewModel() { Mode = 2 });
-                    await Application.Current.MainPage.Navigation.PushModalAsync(new ListLocationView() { BindingContext = vm2 });
-                    IsExecuteCMD = false;
+                    IsLoading = true;
+                    var v2 = await Task.Run(() => new ListLocationView());
+                    await Shell.Current.Navigation.PushModalAsync(v2);
+                    v2.LoadData(2);
                     IsLoading = false;
+                    IsExecuteCMD = false;
                     break;
             }
         }

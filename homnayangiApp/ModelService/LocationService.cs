@@ -1,8 +1,6 @@
 ﻿using Firebase.Database;
 using Firebase.Database.Query;
 using Firebase.Storage;
-using MongoDB.Driver;
-using System.Linq;
 
 namespace homnayangiApp.ModelService
 {
@@ -90,7 +88,7 @@ namespace homnayangiApp.ModelService
         {
             return (await _firebase.Child("locations").OnceAsync<Models.Location>())
                 .Select(x => x.Object)
-                .Where(x => x.Creator == null && x.Name.Contains(name))
+                .Where(x => x.Creator == null && x.Name.Contains(name) && x.IsShare == true)
                 .ToList();
         }
 
@@ -114,10 +112,18 @@ namespace homnayangiApp.ModelService
                 var downloadlink = await task;
                 return downloadlink;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
+        }
+
+        public async Task<List<Models.Location>> GetSaveLocation(List<string> listSave)
+        {
+            return (await _firebase.Child("locations").OnceAsync<Models.Location>())
+                .Select(x => x.Object)
+                .Where(x =>  x.IsShare == true && listSave.Contains(x.Id))
+                .ToList();
         }
     }
 }

@@ -71,8 +71,8 @@ namespace homnayangiApp.ViewModels
                             }
                         }
                         ListLocat = listnew;
+                        IsLoading = false;
                     });
-                    IsLoading = false;
                     break;
                 case 1: //listtag
                     var u1 = dataLogin.Instance.currUser;
@@ -97,8 +97,8 @@ namespace homnayangiApp.ViewModels
                             }
                         }
                         ListLocat = listnew1;
+                        IsLoading = false;
                     });
-                    IsLoading = false;
                     break;
                 case 2: //listcreate
                     var u2 = dataLogin.Instance.currUser;
@@ -116,8 +116,8 @@ namespace homnayangiApp.ViewModels
                             }
                         }
                         ListLocat = listnew2;
+                        IsLoading = false;
                     });
-                    IsLoading = false;
                     break;
             }
         }

@@ -1,12 +1,7 @@
 ﻿using FFImageLoading.Maui;
-using homnayangiApp.ModelService;
-using homnayangiApp.ModelService.StoreSetting;
 using homnayangiApp.ViewModels;
 using homnayangiApp.Views;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 using Mopups.Hosting;
 using UraniumUI;
 
@@ -20,6 +15,7 @@ namespace homnayangiApp
             builder
                 .UseMauiApp<App>()
                 .UseUraniumUI()
+                .UseMauiMaps()
                 .UseFFImageLoading()
                 .UseUraniumUIMaterial()
                 .UseUraniumUIBlurs()
@@ -36,17 +32,24 @@ namespace homnayangiApp
             builder.Services.AddSingleton<SignInStep3View>();
             builder.Services.AddSingleton<SignInStep4View>();
             builder.Services.AddSingleton<SignInStep5View>();
+            builder.Services.AddSingleton<PersonalView>();
+            builder.Services.AddSingleton<StoreSaveView>();
+            builder.Services.AddSingleton<SearchView>();
+            builder.Services.AddSingleton<AccountManagerView>();
+
             builder.Services.AddSingleton<AccountViewModel>();
+            builder.Services.AddSingleton<SaveLocationViewModel>();
+            builder.Services.AddSingleton<AccountManagerViewModel>();
             builder.Services.AddSingleton<SignInViewModel>();
             builder.Services.AddSingleton<SignInStep2ViewModel>();
             builder.Services.AddSingleton<SignInStep3ViewModel>();
             builder.Services.AddSingleton<SignInStep4ViewModel>();
             builder.Services.AddMopupsDialogs();
             builder.Services.AddScoped(sp => new HttpClient { });
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-
             return builder.Build();
         }
     }

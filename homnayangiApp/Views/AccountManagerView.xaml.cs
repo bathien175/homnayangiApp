@@ -1,5 +1,6 @@
 ﻿using homnayangiApp.CustomControls;
 using homnayangiApp.Models;
+using homnayangiApp.ViewModels;
 using UraniumUI.Dialogs.Mopups;
 using UraniumUI.Material.Controls;
 
@@ -10,6 +11,7 @@ public partial class AccountManagerView : ContentPage
 	public AccountManagerView()
 	{
 		InitializeComponent();
+        BindingContext = new AccountManagerViewModel();
 	}
 
     private async void PickerField_SelectedValueChanged(object sender, object e)

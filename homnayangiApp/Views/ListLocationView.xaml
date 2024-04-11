@@ -10,10 +10,8 @@
              xmlns:custom="clr-namespace:homnayangiApp.CustomControls"
              Title="Danh sách địa điểm"
              NavigationPage.HasNavigationBar="False"
+             BindingContext="viewmodel:ListLocationViewModel"
              IsBusy="{Binding IsLoading}">
-    <ContentPage.BindingContext>
-        <viewmodel:ListLocationViewModel />
-    </ContentPage.BindingContext>
     <ContentPage.Resources>
         <custom:ConvertMoney x:Key="MoneyConvert" />
         <custom:ConvertImageSource x:Key="ImageConvert" />

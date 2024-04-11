@@ -13,6 +13,7 @@ namespace homnayangiApp.ModelService
         Task<List<Models.Location>> GetNear(string province, string district);
         Task<List<Models.Location>> GetCreate(string id);
         Task<List<Models.Location>> GetByTag(List<String> listtag);
+        Task<List<Models.Location>> GetSaveLocation(List<String> listSave);
         Task<List<Models.Location>> Search(string name);
         Task<Models.Location> Get(string id);
         Task<Models.Location> Create(Models.Location location);

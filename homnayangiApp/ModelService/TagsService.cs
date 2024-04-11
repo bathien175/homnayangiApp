@@ -2,7 +2,6 @@
 using Firebase.Database;
 using Firebase.Database.Query;
 using homnayangiApp.Models;
-using MongoDB.Driver;
 
 namespace homnayangiApp.ModelService
 {

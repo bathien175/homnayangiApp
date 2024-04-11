@@ -57,7 +57,7 @@ namespace homnayangiApp.Models
             {
                 LocationCurr = this
             });
-            await Application.Current.MainPage.Navigation.PushModalAsync(new DetailLocationView() { BindingContext = vm});
+            await Shell.Current.Navigation.PushModalAsync(new DetailLocationView() { BindingContext = vm});
             IsExecuteCMD = false;
         }
 
