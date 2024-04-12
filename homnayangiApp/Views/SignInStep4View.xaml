@@ -49,25 +49,33 @@
                 Command="{Binding GoStep5Cmd}"/>
         <Grid Grid.Row="0" Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height=".15*"/>
-                <RowDefinition Height=".9*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".75*"/>
             </Grid.RowDefinitions>
             <StackLayout Grid.Row="0" Spacing="20"
                      Grid.ColumnSpan="2">
                 <Label Text="Chọn các TAG quan tâm"
-                   HorizontalOptions="Center"
-                   TextColor="White"
-                   FontSize="23"/>
+                       HorizontalOptions="Center"
+                       TextColor="White"
+                       FontSize="18"/>
                 <Label Text="(Tối đa 5 TAG)"
-                   Margin="0,-10,0,0"
-                   HorizontalOptions="Center"
-                   TextColor="White"
-                   FontSize="Medium"
-                   FontAttributes="Italic"/>
+                       Margin="0,-10,0,0"
+                       HorizontalOptions="Center"
+                       TextColor="White"
+                       FontAttributes="Italic"
+                       FontSize="16"/>
+                <SearchBar VerticalOptions="Center"
+                           Text="{Binding TextFilter}"
+                           PlaceholderColor="Wheat"
+                           Margin="-10,-20,0,0"
+                           TextColor="White"
+                           FontSize="16"
+                           Placeholder="VD: cơm, gà, BBQ ..." 
+                           CancelButtonColor="Red"/>
             </StackLayout>
             <ScrollView Orientation="Vertical"
                         Grid.Row="1">
-                <CollectionView ItemsSource="{Binding ListTag}"
+                <CollectionView ItemsSource="{Binding ListTagFilter}"
                             ItemsLayout="VerticalGrid,3">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>

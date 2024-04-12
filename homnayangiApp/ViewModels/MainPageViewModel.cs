@@ -18,6 +18,7 @@ namespace homnayangiApp.ViewModels
         private ObservableCollection<Models.LocationItem> listLocationByTag = [];
         private ObservableCollection<Models.LocationItem> listLocationUserCreate = [];
         private bool isExecuteCMD = false;
+        private string textSearch = string.Empty;
 
         public string NameUser { get => nameUser; set => SetProperty(ref nameUser, value); }
         public string? ImageByteUser { get => imageByteUser; set
@@ -34,13 +35,22 @@ namespace homnayangiApp.ViewModels
 
 
         public DelegateCommand<string> GotoListLocationCMD { get; }
+        public DelegateCommand SearchLocationCMD { get; }
         public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
+        public string TextSearch { get => textSearch; set => SetProperty(ref textSearch, value); }
 
         public MainPageViewModel()
         {
             _locationService = new LocationService();
             loadData();
             GotoListLocationCMD = new DelegateCommand<string>(executeGotoListCMD, canExecuteGoToList);
+            SearchLocationCMD = new DelegateCommand(executeSearchCMD);
+        }
+
+        private async void executeSearchCMD()
+        {
+            if(TextSearch != string.Empty)
+                await Shell.Current.GoToAsync($"//HomeApp/SearchView?TextSearchByMainPage={TextSearch}");
         }
 
         private bool canExecuteGoToList(string args)

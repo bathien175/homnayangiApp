@@ -230,16 +230,22 @@ namespace homnayangiApp.ViewModels
 
         private async void loadTag()
         {
-            ListTag.Clear();
-            ITagsService _tags = new TagsService();
-            var a = await _tags.Get();
-            if (a.Count > 0)
+            IsLoading = true;
+            await Task.Run(async () =>
             {
-                foreach (var item in a)
+                ITagsService _tags = new TagsService();
+                var a = await _tags.Get();
+                List<string> listnew = [];
+                if (a.Count > 0)
                 {
-                    ListTag.Add(item.Name);
+                    foreach (var item in a)
+                    {
+                        listnew.Add(item.Name);
+                    }
                 }
-            }
+                ListTag = listnew.OrderBy(s => s).ToList();
+                IsLoading = false;
+            });
         }
     }
 }

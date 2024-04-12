@@ -1,4 +1,5 @@
-﻿using FFImageLoading.Maui;
+﻿using CommunityToolkit.Maui;
+using FFImageLoading.Maui;
 using homnayangiApp.ViewModels;
 using homnayangiApp.Views;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,7 @@ namespace homnayangiApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .UseUraniumUI()
                 .UseMauiMaps()
                 .UseFFImageLoading()

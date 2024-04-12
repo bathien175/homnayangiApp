@@ -23,6 +23,7 @@
                      Margin="30,20"
                      Spacing="10">
                 <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CircleArrowLeft}}"
+                        Padding="0"
                         TextColor="White" 
                         WidthRequest="40"
                         BackgroundColor="Transparent"

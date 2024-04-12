@@ -140,16 +140,17 @@ namespace homnayangiApp.ViewModels
             IsLoading = true;
             await Task.Run(async () =>
             {
-                ListTag.Clear();
                 ITagsService _tags = new TagsService();
                 var a = await _tags.Get();
+                List<string> listnew = [];
                 if (a.Count > 0)
                 {
                     foreach (var item in a)
                     {
-                        ListTag.Add(item.Name);
+                        listnew.Add(item.Name);
                     }
                 }
+                ListTag = listnew.OrderBy(s => s).ToList();
                 IsLoading = false;
             });
         }

@@ -17,10 +17,26 @@ namespace homnayangiApp.ViewModels
         private readonly IUserService _userService;
         private bool isLoading = false;
         private List<tagControl> listTag = new List<tagControl>();
-        public List<tagControl> ListTag { get => listTag; set => SetProperty(ref listTag, value); }
+        private string textFilter = string.Empty;
+        private List<tagControl> listTagFilter = new List<tagControl>();
+        public List<tagControl> ListTag { get => listTag;
+            set
+            {
+                SetProperty(ref listTag, value);
+                FilterResult();
+            }
+        }
         public DelegateCommand GoStep5Cmd { get; }
         public DelegateCommand BackStepCmd { get; }
         public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
+        public string TextFilter { get => textFilter; 
+            set 
+            { 
+                SetProperty(ref textFilter, value);
+                FilterResult();
+            } 
+        }
+        public List<tagControl> ListTagFilter { get => listTagFilter; set => SetProperty(ref listTagFilter, value); }
 
         public SignInStep4ViewModel()
         {
@@ -74,7 +90,14 @@ namespace homnayangiApp.ViewModels
             }
         }
 
-
+        private void FilterResult()
+        {
+            //lọc kết quả các tag
+            if (TextFilter == string.Empty)
+                ListTagFilter = ListTag;
+            else
+                ListTagFilter = new List<tagControl>(ListTag.Where(x => x.TagName.ToLower().Contains(TextFilter.ToLower())).ToList());
+        }
         private async void executeBackStepCMD()
         {
             List<tagControl> listnew = ListTag.Where(x => x.IsChecked == true).ToList();
@@ -99,17 +122,22 @@ namespace homnayangiApp.ViewModels
         #region loaddata
         private async void loadTag()
         {
-            List<tagControl> listnew = [];
-            ITagsService _tags = new TagsService();
-            var a = await _tags.Get();
-            if (a.Count > 0)
+            IsLoading = true;
+            await Task.Run(async () =>
             {
-                foreach (var item in a)
+                List<tagControl> listnew = [];
+                ITagsService _tags = new TagsService();
+                var a = await _tags.Get();
+                if (a.Count > 0)
                 {
-                    listnew.Add(new tagControl() { TagName = item.Name });
+                    foreach (var item in a)
+                    {
+                        listnew.Add(new tagControl() { TagName = item.Name });
+                    }
                 }
-            }
-            ListTag = listnew;
+                ListTag = listnew.OrderBy(x => x.TagName).ToList();
+                IsLoading = false;
+            });
         }
         #endregion
         public string GetMD5Hash(string input)

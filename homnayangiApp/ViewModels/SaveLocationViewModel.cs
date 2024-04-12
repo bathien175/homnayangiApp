@@ -79,7 +79,7 @@ namespace homnayangiApp.ViewModels
             }
             else
             {
-                ListLocatFilter = new ObservableCollection<LocationItem>(ListLocat.Where(x => x.LocationCurrent.Name.Contains(TextFilter)));
+                ListLocatFilter = new ObservableCollection<LocationItem>(ListLocat.Where(x => x.LocationCurrent.Name.ToLower(0).Contains(TextFilter.ToLower())));
             }
         }
     }

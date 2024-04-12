@@ -41,6 +41,7 @@
                         Grid.ColumnSpan="2"
                         TextColor="White" 
                         WidthRequest="30"
+                        Padding="0"
                         BackgroundColor="Transparent"
                         HorizontalOptions="End"
                         VerticalOptions="Start"

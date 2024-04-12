@@ -87,6 +87,7 @@
                            VerticalOptions="Center"/>
                 </Border>
                 <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CameraRotate}, Color=White}"
+                        Padding="0"
                         WidthRequest="40"
                         BackgroundColor="Transparent"
                         HorizontalOptions="Start"
@@ -94,6 +95,7 @@
                         Command="{Binding ChangeImageCmd}"
                         CommandParameter="1"/>
                 <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.File}, Color=White}"
+                        Padding="0"
                         WidthRequest="40"
                         BackgroundColor="Transparent"
                         HorizontalOptions="End"

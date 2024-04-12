@@ -41,7 +41,7 @@
                        Text="{Binding TextFilter}"
                        FontSize="16"
                        Grid.Row="0"
-                       Margin="0,20,0,0" 
+                       Margin="0,20,20,0" 
                        Placeholder="Tìm kiếm nhanh..." 
                        CancelButtonColor="Red"/>
             <CollectionView ItemsSource="{Binding ListLocatFilter}"
