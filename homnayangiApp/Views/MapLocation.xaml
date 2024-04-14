@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.MapLocation"
+             xmlns:map="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             Title="Tọa độ của địa điểm">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" BackgroundColor="{StaticResource Primary}">
+            <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CircleArrowLeft},Color=White}"
+                    Padding="0"
+                    WidthRequest="20"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    Margin="10,0,0,0"
+                    Clicked="Button_Clicked"/>
+            <Label Text="Vị trí địa điểm"
+                    TextColor="{DynamicResource White}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    FontAttributes="Bold"
+                    FontSize="18"/>
+        </Grid>
+        <map:Map IsShowingUser="True" 
+                 Grid.Row="1"
+                 IsZoomEnabled="True" 
+                 MapType="Street"
+                 x:Name="myMap">
+        </map:Map>
+    </Grid>
+</ContentPage>

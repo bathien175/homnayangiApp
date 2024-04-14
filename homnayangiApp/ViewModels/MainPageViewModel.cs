@@ -36,6 +36,7 @@ namespace homnayangiApp.ViewModels
 
         public DelegateCommand<string> GotoListLocationCMD { get; }
         public DelegateCommand SearchLocationCMD { get; }
+        public DelegateCommand LocationCurrentViewCMD { get; }
         public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
         public string TextSearch { get => textSearch; set => SetProperty(ref textSearch, value); }
 
@@ -45,6 +46,12 @@ namespace homnayangiApp.ViewModels
             loadData();
             GotoListLocationCMD = new DelegateCommand<string>(executeGotoListCMD, canExecuteGoToList);
             SearchLocationCMD = new DelegateCommand(executeSearchCMD);
+            LocationCurrentViewCMD = new DelegateCommand(executeShowCurrentLocation);
+        }
+
+        private async void executeShowCurrentLocation()
+        {
+            await Shell.Current.GoToAsync("//MapCurrent");
         }
 
         private async void executeSearchCMD()

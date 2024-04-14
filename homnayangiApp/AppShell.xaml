@@ -45,6 +45,11 @@
         Route="ForgotPassword" 
         Title="Quên mật khẩu"/>
 
+    <ShellContent
+        ContentTemplate="{DataTemplate view:MapCurrent}"
+        Route="MapCurrent" 
+        Title="Địa điểm hiện tại"/>
+    
     <FlyoutItem Title="Trang chủ" 
                 Route="HomeApp"
                 FlyoutDisplayOptions="AsMultipleItems">

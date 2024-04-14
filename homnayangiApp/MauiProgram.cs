@@ -38,6 +38,7 @@ namespace homnayangiApp
             builder.Services.AddSingleton<StoreSaveView>();
             builder.Services.AddSingleton<SearchView>();
             builder.Services.AddSingleton<AccountManagerView>();
+            builder.Services.AddSingleton<MapCurrent>();
 
             builder.Services.AddSingleton<AccountViewModel>();
             builder.Services.AddSingleton<SaveLocationViewModel>();

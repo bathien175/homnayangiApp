@@ -233,37 +233,44 @@
                        HeightRequest="150"
                        HasShadow="True"
                        BorderColor="White">
-                    <StackLayout>
-                        <Frame CornerRadius="10" 
+                    <Grid>
+                        <StackLayout>
+                            <Frame CornerRadius="10" 
                                HeightRequest="100"
                                Padding="0">
-                            <Image HeightRequest="100"
+                                <Image HeightRequest="100"
                                    Source="backgroundgps.jpg" 
                                    Aspect="AspectFill"/>
-                        </Frame>
-                        <Grid Margin="-5,5,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.LocationDot}, Color={StaticResource Primary}, Size=20}"
+                            </Frame>
+                            <Grid Margin="-5,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.LocationDot}, Color={StaticResource Primary}, Size=20}"
                                    HeightRequest="20"
                                    WidthRequest="20"
                                    VerticalOptions="Center"
                                    HorizontalOptions="Center"/>
-                            <Label  Grid.Column="1">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding LocationCurr.LocationCurrent.Address}" FontSize="10" TextColor="Gray" />
-                                        <Span Text=", " FontSize="10" TextColor="Gray" />
-                                        <Span Text="{Binding LocationCurr.LocationCurrent.District}" FontSize="10" TextColor="Gray" />
-                                        <Span Text=", " FontSize="10" TextColor="Gray" />
-                                        <Span Text="{Binding LocationCurr.LocationCurrent.Province}" FontSize="10" TextColor="Gray" />
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
+                                <Label  Grid.Column="1">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding LocationCurr.LocationCurrent.Address}" FontSize="10" TextColor="Gray" />
+                                            <Span Text=", " FontSize="10" TextColor="Gray" />
+                                            <Span Text="{Binding LocationCurr.LocationCurrent.District}" FontSize="10" TextColor="Gray" />
+                                            <Span Text=", " FontSize="10" TextColor="Gray" />
+                                            <Span Text="{Binding LocationCurr.LocationCurrent.Province}" FontSize="10" TextColor="Gray" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </Grid>
+                        </StackLayout>
+                        <Grid BackgroundColor="Transparent">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding gotoLocation}" />
+                            </Grid.GestureRecognizers>
                         </Grid>
-                    </StackLayout>
+                    </Grid>
                 </Frame>
 
                 <Grid Margin="10,0,10,0">

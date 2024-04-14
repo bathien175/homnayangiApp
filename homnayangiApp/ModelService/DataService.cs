@@ -9,7 +9,6 @@ namespace homnayangiApp.ModelService
 {
     public class DataService
     {
-        public const String apiKey = "AIzaSyAfxrVYKNw0652xYEA77qYb9cd18sp6__c";
         public const String ConnectStringFirebase = "https://homnayangi-ed618-default-rtdb.firebaseio.com/";
         public const String ConnectStringFirebaseStorage = "homnayangi-ed618.appspot.com";
     }

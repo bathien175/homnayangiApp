@@ -29,16 +29,16 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>NSAllowsArbitraryLoads</key>
-    <true/>
+	<true/>
 	<key>NSCameraUsageDescription</key>
-    <string>Ứng dụng cần truy cập vào máy ảnh để chụp hình.</string>
-	 <key>NSPhotoLibraryUsageDescription</key>
-    <string>Ứng dụng cần truy cập vào ảnh để lưu trữ.</string>
+	<string>Ứng dụng cần truy cập vào máy ảnh để chụp hình.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Ứng dụng cần truy cập vào ảnh để lưu trữ.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Ứng dụng cần truy cập vào ảnh để thêm ảnh vào thư viện.</string>
-  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-  <string>Chúng tôi cần quyền truy cập địa điểm của bạn?</string>
-  <key>NSLocationWhenInUseUsageDescription</key>
-  <string>Chúng tôi cần quyền truy cập địa điểm của bạn?</string>
+	<string>Ứng dụng cần truy cập vào ảnh để thêm ảnh vào thư viện.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Chúng tôi cần truy cập địa điểm của bạn bất cứ lúc nào!</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Chúng tôi cần quyền truy cập địa điểm của bạn khi sử dụng ứng dụng?</string>
 </dict>
 </plist>

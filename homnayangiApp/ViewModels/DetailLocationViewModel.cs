@@ -34,10 +34,17 @@ namespace homnayangiApp.ViewModels
 
 
         public DelegateCommand BackPage { get; }
+        public DelegateCommand gotoLocation { get; }
 
         public DetailLocationViewModel()
         {
             BackPage = new DelegateCommand(executeBackPageCMD);
+            gotoLocation = new DelegateCommand(executeViewLocation);
+        }
+
+        private async void executeViewLocation()
+        {
+            await Shell.Current.Navigation.PushModalAsync(new Views.MapLocation(Address, locationCurr.LocationCurrent.Name));
         }
 
         private async void executeBackPageCMD()

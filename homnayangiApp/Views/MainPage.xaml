@@ -49,6 +49,9 @@
                                FontSize="13"
                                VerticalTextAlignment="Center" 
                                Grid.Column="1" />
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LocationCurrentViewCMD}" />
+                        </Grid.GestureRecognizers>
                     </Grid>
                 </Border>
                 <Border HeightRequest="50"
