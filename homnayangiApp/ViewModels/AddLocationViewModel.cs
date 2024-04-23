@@ -95,6 +95,12 @@ namespace homnayangiApp.ViewModels
             ChooseImageCMD = new DelegateCommand(executeChooseImageCMD);
             CreateLocationCMD = new DelegateCommand(executeCreateLocationCMD);
             removeImage = new DelegateCommand<string>(executeRemoveImageCMD);
+            backPage = new DelegateCommand(executebackPageCMD);
+        }
+
+        private async void executebackPageCMD()
+        {
+            await Shell.Current.Navigation.PopAsync();
         }
 
         private void executeRemoveImageCMD(string s)
@@ -122,7 +128,7 @@ namespace homnayangiApp.ViewModels
             {
                 if(pickImages.Count() > 10)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Xin lỗi", "Chỉ được chọn tối đa 10 ảnh", "Đã hiểu");
+                    await Shell.Current.DisplayAlert("Xin lỗi", "Chỉ được chọn tối đa 10 ảnh", "Đã hiểu");
                 }
                 else
                 {
@@ -150,20 +156,20 @@ namespace homnayangiApp.ViewModels
         {
             if (CloseTime <= OpenTime && IsOpen24H == false)
             {
-                await Application.Current.MainPage.DisplayAlert("Thất bại!","Thời gian hoạt động không hợp lệ! Vui lòng kiểm tra và thử lại","OK");
+                await Shell.Current.DisplayAlert("Thất bại!","Thời gian hoạt động không hợp lệ! Vui lòng kiểm tra và thử lại","OK");
             }else if(MaxPrice < MinPrice)
             {
-                await Application.Current.MainPage.DisplayAlert("Thất bại!", "Giá bán không hợp lệ! Vui lòng kiểm tra và thử lại", "OK");
+                await Shell.Current.DisplayAlert("Thất bại!", "Giá bán không hợp lệ! Vui lòng kiểm tra và thử lại", "OK");
             }
             else if(TagSelect.Count ==0)
             {
-                await Application.Current.MainPage.DisplayAlert("Thất bại!", "Vui lòng chọn Tags, tối đa 10 tags", "OK");
+                await Shell.Current.DisplayAlert("Thất bại!", "Vui lòng chọn Tags, tối đa 10 tags", "OK");
             }else if (TagSelect.Count >10)
             {
-                await Application.Current.MainPage.DisplayAlert("Thất bại!", "Chỉ được chọn tối đa 10 Tags!", "OK");
+                await Shell.Current.DisplayAlert("Thất bại!", "Chỉ được chọn tối đa 10 Tags!", "OK");
             }else if(ListImageString.Count() == 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Thất bại!", "Hãy chọn ít nhất 1 tấm ảnh", "OK");
+                await Shell.Current.DisplayAlert("Thất bại!", "Hãy chọn ít nhất 1 tấm ảnh", "OK");
             } 
             else
             {
@@ -211,12 +217,12 @@ namespace homnayangiApp.ViewModels
                     l.Tags = new List<String>(TagSelect);
                     l.IsShare = true;
                     await _locationService.Create(l);
-                    await Application.Current.MainPage.DisplayAlert("Thành công!", "Tạo địa điểm mới thành công!", "OK");
+                    await Shell.Current.DisplayAlert("Thành công!", "Tạo địa điểm mới thành công!", "OK");
                     IsLoading = false;
                 }
                 catch (Exception)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Thất bại!", "Server xảy ra lỗi! Không thể ghi dữ liệu!", "Thử lại");
+                    await Shell.Current.DisplayAlert("Thất bại!", "Server xảy ra lỗi! Không thể ghi dữ liệu!", "Thử lại");
                     IsLoading = false;
                 }
             }
@@ -224,6 +230,7 @@ namespace homnayangiApp.ViewModels
 
         public DelegateCommand CreateLocationCMD { get; }
         public DelegateCommand ChooseImageCMD { get; }
+        public DelegateCommand backPage { get; }
         public DelegateCommand<string> removeImage { get; }
         public string NameLocation { get => nameLocation; set => SetProperty(ref nameLocation, value) ; }
         public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }

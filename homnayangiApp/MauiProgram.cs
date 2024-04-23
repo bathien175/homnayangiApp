@@ -38,6 +38,7 @@ namespace homnayangiApp
             builder.Services.AddSingleton<StoreSaveView>();
             builder.Services.AddSingleton<SearchView>();
             builder.Services.AddSingleton<AccountManagerView>();
+            builder.Services.AddSingleton<AdminAddLocationView>();
             builder.Services.AddSingleton<MapCurrent>();
 
             builder.Services.AddSingleton<AccountViewModel>();
@@ -47,6 +48,7 @@ namespace homnayangiApp
             builder.Services.AddSingleton<SignInStep2ViewModel>();
             builder.Services.AddSingleton<SignInStep3ViewModel>();
             builder.Services.AddSingleton<SignInStep4ViewModel>();
+            builder.Services.AddSingleton<ListUserCreateViewModel>();
             builder.Services.AddMopupsDialogs();
             builder.Services.AddScoped(sp => new HttpClient { });
 

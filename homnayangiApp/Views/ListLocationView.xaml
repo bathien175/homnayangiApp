@@ -26,6 +26,7 @@
         <Grid Grid.Row="0"
               BackgroundColor="{StaticResource Primary}">
             <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.ArrowLeft}, Color=White, Size=20}"
+                    Padding="0"
                     WidthRequest="30"
                     HeightRequest="30"
                     CornerRadius="120"

@@ -19,7 +19,7 @@ namespace homnayangiApp.ViewModels
 
         private async void executeBackPageCMD()
         {
-            await Application.Current.MainPage.Navigation.PopModalAsync(true);
+            await Shell.Current.Navigation.PopModalAsync();
         }
     }
 }

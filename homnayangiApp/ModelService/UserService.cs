@@ -128,5 +128,14 @@ namespace homnayangiApp.ModelService.StoreSetting
                 throw;
             }
         }
+
+        public async Task<List<User>> SearchUser(string idU, string idCurrent)
+        {
+            return (await _firebase.Child("users")
+                .OnceAsync<User>())
+                .Select(x => x.Object)
+                .Where(x => x.IDUser != "@admin@" && x.IDUser != idCurrent && x.IDUser.ToLower().Contains(idU.ToLower()))
+                .ToList();
+        }
     }
 }

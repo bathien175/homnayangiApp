@@ -27,17 +27,19 @@
         <Grid Background="{StaticResource Primary}">
             <Label VerticalOptions="Center"
                    HorizontalOptions="Center"
-                   Text="Địa điểm"
+                   Text="Tạo địa điểm"
                    FontAttributes="Bold"
                    FontSize="Medium"
                    TextColor="White"/>
             <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Xmark}, Size=25}"
+                    Padding="0"
                     TextColor="White" 
                     WidthRequest="30"
                     BackgroundColor="Transparent"
                     HorizontalOptions="End"
                     VerticalOptions="Center"
-                    Margin="0,0,10,0">
+                    Margin="0,0,10,0"
+                    Command="{Binding backPage}">
             </Button>
         </Grid>
         <ScrollView Grid.Row="1" 

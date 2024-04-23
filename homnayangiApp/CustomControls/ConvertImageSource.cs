@@ -11,16 +11,14 @@ namespace homnayangiApp.CustomControls
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value != null)
+            if (value == null || value as string == "")
             {
-                MemoryStream stream = new MemoryStream(System.Convert.FromBase64String(value as string));
-                ImageSource image = ImageSource.FromStream(() => stream);
-                return image;
+                string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Images", "noimage.png");
+                return ImageSource.FromFile(imagePath);
             }
             else
             {
-                string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Images", "backgroundstore.png");
-                return ImageSource.FromFile(imagePath);
+                return value;
             }
         }
 

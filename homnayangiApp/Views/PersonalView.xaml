@@ -179,6 +179,9 @@
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            Grid.Column="2"/>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding gotoCommunityViewCMD}" />
+                    </Grid.GestureRecognizers>
                 </Grid>
             </Border>
             <Border HeightRequest="50"
@@ -209,6 +212,9 @@
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            Grid.Column="2"/>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToCreateCMD}" />
+                    </Grid.GestureRecognizers>
                 </Grid>
             </Border>
             <Border HeightRequest="50"
@@ -238,7 +244,7 @@
                     </Grid.GestureRecognizers>
                 </Grid>
             </Border>
-            <Label Text="Xây dựng bởi: Lê Tuấn Kiệt  ,  Phiên bản: V1.2.1"
+            <Label Text="Xây dựng bởi: Lê Tuấn Kiệt  ,  Phiên bản: V1.3.0"
                    Margin="20,50,0,0"
                    FontSize="Micro"
                    TextColor="Black"

@@ -50,6 +50,7 @@ namespace homnayangiApp.ViewModels
         public DelegateCommand gotoSettingCMD { get; }
         public DelegateCommand gotoInformationCMD { get; }
         public DelegateCommand gotoChangePasswordCMD { get; }
+        public DelegateCommand gotoCommunityViewCMD { get; }
         public DelegateCommand BackPageCMD { get; }
         public DelegateCommand InfoBackPageCMD { get; }
         public DelegateCommand TakePic { get; }
@@ -57,6 +58,7 @@ namespace homnayangiApp.ViewModels
         public DelegateCommand ResetPic { get; }
         public DelegateCommand UpdateInformation { get; }
         public DelegateCommand ChangePassCMD { get; }
+        public DelegateCommand GoToCreateCMD { get; }
         public AccountManagerViewModel()
         {
             _userService = new UserService();
@@ -72,12 +74,22 @@ namespace homnayangiApp.ViewModels
             gotoChangePasswordCMD = new DelegateCommand(executeGotoChangePassCMD);
             ChangePassCMD = new DelegateCommand(executeChangePassCMD);
             gotoInformationCMD = new DelegateCommand(executegotoInformationCMD);
+            GoToCreateCMD = new DelegateCommand(executeGotoCreateCMD);
+            gotoCommunityViewCMD = new DelegateCommand(executeGoToCommunityCMD);
         }
 
+        private async void executeGoToCommunityCMD()
+        {
+            await Shell.Current.Navigation.PushModalAsync(new CommunityView());
+        }
+
+        private async void executeGotoCreateCMD()
+        {
+            await Shell.Current.Navigation.PushModalAsync(new ListUserCreateView());
+        }
 
         private async void loadDta()
         {
-            IsLoading = true;
             await Task.Run(() =>
             {
                 CurentUser = dataLogin.Instance.currUser;
@@ -91,7 +103,6 @@ namespace homnayangiApp.ViewModels
                 DatebirthUser = result;
                 CitySelect = ListCity.IndexOf(ListCity.Where(x => x.province_name == CurentUser.City).First());
                 DistrictUser = CurentUser.Dictrict;
-                IsLoading = false;
             });
         }
         private async void executegotoInformationCMD()
@@ -119,7 +130,7 @@ namespace homnayangiApp.ViewModels
                 dataLogin.Instance.currUser = u;
                 CurentUser = u;
                 await Shell.Current.DisplayAlert("Thành công","Đổi mật khẩu thành công","OK");
-                await Shell.Current.Navigation.PopModalAsync(true);
+                await Shell.Current.Navigation.PopModalAsync();
             }
         }
 
@@ -279,11 +290,11 @@ namespace homnayangiApp.ViewModels
 
         private async void executeBackPageCMD()
         {
-           await Shell.Current.Navigation.PopModalAsync(true);
+           await Shell.Current.Navigation.PopModalAsync();
         }
         private async void executeInfoBackPageCMD()
         {
-            await Shell.Current.Navigation.PopModalAsync(true);
+            await Shell.Current.Navigation.PopModalAsync();
         }
         private async void executeSettingsCMD()
         {

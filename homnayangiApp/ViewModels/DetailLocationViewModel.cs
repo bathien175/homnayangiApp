@@ -49,7 +49,7 @@ namespace homnayangiApp.ViewModels
 
         private async void executeBackPageCMD()
         {
-            await Shell.Current.Navigation.PopAsync(true);
+            await Shell.Current.Navigation.PopAsync();
         }
 
         public async void loadData()

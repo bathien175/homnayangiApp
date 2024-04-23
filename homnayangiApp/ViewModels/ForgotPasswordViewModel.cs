@@ -81,7 +81,7 @@ namespace homnayangiApp.ViewModels
                     await _userService.RestorePassword(sdt);
                     await Shell.Current.DisplayAlert("Chúc mừng", "Phục hồi mật khẩu thành công, Bạn có thể tiến hành đăng nhập lại", "OK");
                     IsLoading = false;
-                    await Shell.Current.Navigation.PopAsync(true);
+                    await Shell.Current.Navigation.PopAsync();
                 }
                 catch (Exception)
                 {
