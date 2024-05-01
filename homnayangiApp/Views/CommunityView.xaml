@@ -69,7 +69,7 @@
                             <Frame WidthRequest="80"
                                    HeightRequest="80"
                                    Grid.Column="0">
-                                <Image Source="{Binding ImageData, Converter={StaticResource convertImage}}"
+                                <Image Source="{Binding CurrentUser.ImageData, Converter={StaticResource convertImage}}"
                                         WidthRequest="80"
                                         HeightRequest="80"
                                         Aspect="AspectFill"/>
@@ -82,7 +82,7 @@
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0"
                                         Grid.ColumnSpan="2"
-                                        Text="{Binding Name}"
+                                        Text="{Binding CurrentUser.Name}"
                                         FontAttributes="Bold"
                                         FontSize="16" 
                                         MaxLines="1"
@@ -97,12 +97,15 @@
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="@" TextColor="#DC143C" />
-                                            <Span Text="{Binding IDUser}" TextColor="#8A16C1" />
+                                            <Span Text="{Binding CurrentUser.IDUser}" TextColor="#8A16C1" />
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
                             </Grid>
                         </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding gotoDetail}" CommandParameter="{Binding CurrentUser}"/>
+                        </Frame.GestureRecognizers>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

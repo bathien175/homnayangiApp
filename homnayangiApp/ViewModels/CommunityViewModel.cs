@@ -4,6 +4,7 @@ using homnayangiApp.Models;
 using homnayangiApp.ModelService;
 using homnayangiApp.ModelService.StoreSetting;
 using homnayangiApp.ViewModels.Base;
+using homnayangiApp.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,14 +19,15 @@ namespace homnayangiApp.ViewModels
         private readonly IUserService _userService;
         //private
         private bool isLoading = false;
-        private ObservableCollection<User> listUser = new ObservableCollection<User>();
+        private ObservableCollection<UserCustomModel> listUser = new ObservableCollection<UserCustomModel>();
         private string textSearch = string.Empty;
         //command
         public DelegateCommand backPage { get; }
         public DelegateCommand searchUser { get; }
+        public DelegateCommand<User>? gotoDetail { get; }
         //public
         public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
-        public ObservableCollection<User> ListUser { get => listUser; set => SetProperty(ref listUser, value); }
+        public ObservableCollection<UserCustomModel> ListUser { get => listUser; set => SetProperty(ref listUser, value); }
         public string TextSearch { get => textSearch; set => SetProperty(ref textSearch, value); }
 
         public CommunityViewModel() 
@@ -33,6 +35,16 @@ namespace homnayangiApp.ViewModels
             _userService = new UserService();
             backPage = new DelegateCommand(executeBackPageCMD);
             searchUser = new DelegateCommand(executeSearchCMD);
+            gotoDetail = new DelegateCommand<User>(executeGotoDetailCMD);
+        }
+
+        private async void executeGotoDetailCMD(User user)
+        {
+            IsLoading = true;
+            var vm = await Task.Run(() => new DetailUserViewModel(user));
+            var v = await Task.Run(() => new DetailUserView { BindingContext = vm });
+            IsLoading = false;
+            await Shell.Current.Navigation.PushAsync(v);
         }
 
         private async void executeSearchCMD()
@@ -51,7 +63,15 @@ namespace homnayangiApp.ViewModels
                 }
                 else
                 {
-                    ListUser = new ObservableCollection<User>(a);
+                    var listnew = new ObservableCollection<UserCustomModel>();
+                    foreach (var item in a)
+                    {
+                        UserCustomModel mol = new UserCustomModel();
+                        mol.CurrentUser = item;
+                        mol.gotoDetail = gotoDetail;
+                        listnew.Add(mol);
+                    }
+                    ListUser = listnew;
                 }
                 IsLoading = false;
             }

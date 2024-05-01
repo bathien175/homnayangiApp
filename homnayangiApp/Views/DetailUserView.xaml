@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="homnayangiApp.Views.DetailUserView"
+             xmlns:viewmodel ="clr-namespace:homnayangiApp.ViewModels"
+             xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             Title="Chi tiết tài khoản"
+             xmlns:custom ="clr-namespace:homnayangiApp.CustomControls"
+             IsBusy="{Binding isLoading}"
+             Appearing="ContentPage_Appearing">
+    <ContentPage.Resources>
+        <custom:ConvertImageSource x:Key="ImageConvert" />
+        <custom:ConvertImageSourceLocation x:Key="ImageLocationConvert" />
+        <custom:ConvertMoney x:Key="MoneyConvert" />
+        <custom:ConvertTime x:Key="TimeConvert" />
+        <custom:BooleanInverseConverter x:Key="BoolConvert" />
+    </ContentPage.Resources>
+    <ScrollView Orientation="Vertical">
+        <StackLayout>
+            <Grid HeightRequest="150">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="backgroundapp.jpg" Aspect="AspectFill" 
+                       Grid.RowSpan="4"
+                       Grid.ColumnSpan="2"/>
+                <Grid  BackgroundColor="Black"
+                       Grid.RowSpan="4"
+                       Grid.ColumnSpan="2" 
+                       Opacity="0.5"/>
+                <Button ImageSource="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.CircleArrowLeft},Color=White}"
+                        Grid.RowSpan="4"
+                        Grid.ColumnSpan="2"
+                        Padding="0"
+                        WidthRequest="50"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Start"
+                        Margin="0,5,0,0"
+                        Command="{Binding backPage}"/>
+                <Border Margin="0,30,20,0" 
+                        Grid.Row="1"
+                        Grid.RowSpan="3"
+                        Grid.Column="0"
+                        HeightRequest="80"
+                        HorizontalOptions="End"
+                        StrokeShape="RoundRectangle 150"
+                        StrokeThickness="3"
+                        VerticalOptions="Center"
+                        WidthRequest="80">
+                    <Border.Stroke>
+                        <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                            <GradientStop Color="Red" Offset="0"/>
+                            <GradientStop Color="Orange" Offset="0.1"/>
+                            <GradientStop Color="Yellow" Offset="0.3"/>
+                            <GradientStop Color="Green" Offset="0.5"/>
+                            <GradientStop Color="Blue" Offset="0.7"/>
+                            <GradientStop Color="DarkBlue" Offset="0.9"/>
+                            <GradientStop Color="Violet" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Stroke>
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource Primary}" />
+                    </Border.Shadow>
+                    <Image Source="{Binding UserCurrent.ImageData, Converter={StaticResource ImageConvert}}" 
+                            Aspect="AspectFill"
+                            HeightRequest="80"
+                            WidthRequest="80"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+                </Border>
+                <Label Text="{Binding UserCurrent.Name}"
+                       FontAttributes="Bold"
+                       FontSize="Large"
+                       Grid.Column="1"
+                       TextColor="White"
+                       Grid.Row="2" 
+                       HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Center">
+                    <Label.Shadow>
+                        <Shadow Brush="{StaticResource Black}" Radius="15" />
+                    </Label.Shadow>
+                </Label>
+                <Label FontSize="15"
+                       TextColor="White"
+                       Grid.Column="1"
+                       Grid.Row="3" 
+                       HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Start">
+                    <Label.Shadow>
+                        <Shadow Brush="{StaticResource Black}" Radius="15" />
+                    </Label.Shadow>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="@ " TextColor="LightGreen"/>
+                            <Span Text="{Binding UserCurrent.IDUser}" TextColor="#ECF6C4" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </Grid>
+            <Label Text="Các địa điểm đã tạo"
+                   FontAttributes="Bold"
+                   Margin="10,20,0,0"
+                   FontSize="Medium"
+                   TextColor="Black"
+                   HorizontalTextAlignment="Start"
+                   VerticalTextAlignment="Start"/>
+            <SearchBar VerticalOptions="Center"
+                       Text="{Binding TextSearch}"
+                       Margin="-10,10,0,10"
+                       TextColor="Black"
+                       FontSize="16"
+                       Placeholder="Tìm kiếm gì đó..." 
+                       CancelButtonColor="Red"/>
+            <CollectionView ItemsSource="{Binding ListLocationFillter}"
+                            Margin="20" >
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame HeightRequest="100"
+                               BorderColor="#F5F6F1"
+                               BackgroundColor="White"
+                               CornerRadius="10"
+                               HasShadow="True">
+                            <Grid Margin="-20">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding gotoDetail}" />
+                                </Grid.GestureRecognizers>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Frame WidthRequest="80"
+                                       HeightRequest="80"
+                                       Grid.Column="0">
+                                    <Image Source="{Binding LocationCurrent.Images[0], Converter={StaticResource ImageLocationConvert}}"
+                                           WidthRequest="80"
+                                           HeightRequest="80"
+                                           Aspect="AspectFill"/>
+                                </Frame>
+                                <Frame WidthRequest="25" 
+                                       HeightRequest="25" 
+                                       BackgroundColor="#27166C" 
+                                       CornerRadius="25" 
+                                       Padding="5"
+                                       Grid.Column="0"
+                                       VerticalOptions="Start"
+                                       HorizontalOptions="Start"
+                                       Margin="0,0,10,0"
+                                       IsVisible="{Binding IsUserCreate, Converter={StaticResource BoolConvert}}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SaveCommand}" />
+                                    </Frame.GestureRecognizers>
+                                    <Grid>
+                                        <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}, Color=Red, Size=15}"
+                                               IsVisible="{Binding IsSave}"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center"/>
+                                        <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Heart}, Color=White, Size=15}"
+                                               IsVisible="{Binding IsSave, Converter={StaticResource BoolConvert}}"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center"/>
+                                    </Grid>
+                                </Frame>
+                                <Frame WidthRequest="25" 
+                                       HeightRequest="25" 
+                                       BackgroundColor="#27166C" 
+                                       CornerRadius="25" 
+                                       Padding="5"
+                                       Grid.Column="0"
+                                       VerticalOptions="Start"
+                                       HorizontalOptions="End"
+                                       Margin="0,0,0,0">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding CloneLocationCommand}" CommandParameter="{Binding LocationCurrent}"/>
+                                    </Frame.GestureRecognizers>
+                                    <Grid>
+                                        <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Check}, Color=Green, Size=15}"
+                                               IsVisible="{Binding IsClone}"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center"/>
+                                        <Image Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Download}, Color=White, Size=15}"
+                                               IsVisible="{Binding IsClone, Converter={StaticResource BoolConvert}}"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center"/>
+                                    </Grid>
+                                </Frame>
+                                <Grid Grid.Column="1"
+                                      Margin="0,10,10,10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0"
+                                            Grid.ColumnSpan="2"
+                                            Text="{Binding LocationCurrent.Name}"
+                                            FontAttributes="Bold"
+                                            FontSize="14" 
+                                            MaxLines="1"
+                                            LineBreakMode="TailTruncation"
+                                            VerticalOptions="Center"/>
+                                    <Label Grid.Row="1"
+                                            Grid.ColumnSpan="2"
+                                            MaxLines="1"
+                                            LineBreakMode="TailTruncation"
+                                            VerticalOptions="Center">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding LocationCurrent.Address}" TextColor="Gray" FontSize="10" />
+                                                <Span Text=", " TextColor="Gray" FontSize="10" />
+                                                <Span Text="{Binding LocationCurrent.District}" TextColor="Gray" FontSize="10" />
+                                                <Span Text=", " TextColor="Gray" FontSize="10" />
+                                                <Span Text="{Binding LocationCurrent.Province}" TextColor="Gray" FontSize="10" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Image HeightRequest="15"
+                                                WidthRequest="15"
+                                                Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.Clock}, Size=15, Color=Black}" 
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Center"/>
+                                        <Label VerticalTextAlignment="Center"
+                                                Grid.Column="1"
+                                                MaxLines="1"
+                                                LineBreakMode="TailTruncation">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding LocationCurrent.OpenTime, Converter={StaticResource TimeConvert}}"
+                                                                  FontSize="12"/>
+                                                    <Span Text=" / " FontSize="12"/>
+                                                    <Span Text="{Binding LocationCurrent.CloseTime, Converter={StaticResource TimeConvert}}"
+                                                                  FontSize="12"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </Grid>
+                                    <Grid Grid.Row="3" Grid.ColumnSpan="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Image HeightRequest="15"
+                                                       WidthRequest="15"
+                                                       Source="{FontImageSource FontFamily=FASolid, Glyph={x:Static fa:Solid.DollarSign}, Size=15, Color=Black}" 
+                                                       VerticalOptions="Center"
+                                                       HorizontalOptions="Center"/>
+                                        <Label VerticalTextAlignment="Center"
+                                                       Grid.Column="1"
+                                                       FontSize="12" 
+                                                       MaxLines="1"
+                                                       LineBreakMode="TailTruncation">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding LocationCurrent.MinPrice, Converter={StaticResource MoneyConvert}}"
+                                                                  FontSize="12"/>
+                                                    <Span Text=" - " FontSize="12"/>
+                                                    <Span Text="{Binding LocationCurrent.MaxPrice, Converter={StaticResource MoneyConvert}}"
+                                                                  FontSize="12"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <StackLayout Orientation="Vertical"
+                                         Margin="0,0,20,0">
+                        <Image HeightRequest="160"
+                                       WidthRequest="160"
+                                       Source="emptylocation.png"
+                                       Aspect="AspectFill" />
+                        <Label HorizontalTextAlignment="Center"
+                                       Text="Chưa tạo địa điểm riêng nào!"
+                                       TextColor="Gray"
+                                       FontSize="Medium"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

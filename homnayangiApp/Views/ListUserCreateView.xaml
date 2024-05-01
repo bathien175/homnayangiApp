@@ -14,6 +14,7 @@
         <viewmodel:ListUserCreateViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Resources>
+        <custom:ConvertImageSourceLocation x:Key="ImageConvert" />
         <custom:ConvertMoney x:Key="MoneyConvert" />
         <custom:ConvertTime x:Key="TimeConvert" />
         <custom:BooleanInverseConverter x:Key="BoolConvert" />
@@ -97,7 +98,7 @@
                                 <Frame WidthRequest="80"
                                        HeightRequest="80"
                                        Grid.Column="0">
-                                    <Image Source="{Binding LocationCurrent.Images[0]}"
+                                    <Image Source="{Binding LocationCurrent.Images[0],Converter={StaticResource ImageConvert}}"
                                            WidthRequest="80"
                                            HeightRequest="80"
                                            Aspect="AspectFill"/>

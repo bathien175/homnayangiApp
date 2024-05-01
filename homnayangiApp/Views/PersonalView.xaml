@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="homnayangiApp.Views.PersonalView"
              xmlns:viewmodel ="clr-namespace:homnayangiApp.ViewModels"
-             xmlns:skia="clr-namespace:SkiaSharp;assembly=SkiaSharp"
              xmlns:fa="clr-namespace:UraniumUI.Icons.FontAwesome;assembly=UraniumUI.Icons.FontAwesome"
              xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:validate="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"

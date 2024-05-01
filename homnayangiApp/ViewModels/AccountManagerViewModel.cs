@@ -112,8 +112,8 @@ namespace homnayangiApp.ViewModels
             IsExecuteCMD = true;
             IsLoading = true;
             var v = await Task.Run(() => new AccountManagerView());
-            await Shell.Current.Navigation.PushModalAsync(v);
             IsLoading = false;
+            await Shell.Current.Navigation.PushModalAsync(v);
             IsExecuteCMD = false;
         }
 
@@ -178,7 +178,7 @@ namespace homnayangiApp.ViewModels
             }
             else
             {
-                IsLoading = true;
+                //IsLoading = true;
                 TextError = string.Empty;
                 User u = new User();
                 u.Id = CurentUser.Id;
@@ -208,12 +208,10 @@ namespace homnayangiApp.ViewModels
                     await _userService.Update(u.Id, u);
                     dataLogin.Instance.currUser = u;
                     CurentUser = u;
-                    IsLoading = false;
                     await Shell.Current.DisplayAlert("Thành công","Cập nhật thông tin cá nhân thành công","OK");
                 }
                 catch (Exception)
                 {
-                    IsLoading = false;
                     await Shell.Current.DisplayAlert("Thất bại", "Server xảy ra lỗi trong quá trình đọc dữ liệu", "Thử lại");
                 }
             }

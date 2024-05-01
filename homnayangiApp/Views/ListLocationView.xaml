@@ -14,7 +14,7 @@
              IsBusy="{Binding IsLoading}">
     <ContentPage.Resources>
         <custom:ConvertMoney x:Key="MoneyConvert" />
-        <custom:ConvertImageSource x:Key="ImageConvert" />
+        <custom:ConvertImageSourceLocation x:Key="ImageConvert" />
         <custom:ConvertTime x:Key="TimeConvert" />
         <custom:BooleanInverseConverter x:Key="BoolConvert" />
     </ContentPage.Resources>

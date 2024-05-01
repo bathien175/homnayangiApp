@@ -14,6 +14,7 @@
         public List<string>? SaveStore { get; set; }
         public string Password { get; set; } = String.Empty;
         public List<string> Tags { get; set; } = new List<string>();
+        public List<string>? CloneLocation { get; set; } = null;
 
     }
 }
