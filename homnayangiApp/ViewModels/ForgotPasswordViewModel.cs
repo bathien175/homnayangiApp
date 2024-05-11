@@ -104,7 +104,7 @@ namespace homnayangiApp.ViewModels
             else
             {
                 ObservableCollection<FindUserModel> listnew = new ObservableCollection<FindUserModel>();
-                var list2 = new ObservableCollection<FindUserModel>(ListFull.Where(x => x.NameUser.Contains(s)).ToList());
+                var list2 = new ObservableCollection<FindUserModel>(ListFull.Where(x => x.NameUser.ToLower().Contains(s.ToLower())).ToList());
                 if (list2.Count > 0)
                 {
                     foreach (var item in list2)
@@ -114,10 +114,7 @@ namespace homnayangiApp.ViewModels
                         model.NameUser = item.NameUser;
                         model.PhoneRealUser = item.PhoneRealUser;
                         model.RestorePassword = item.RestorePassword;
-                        var imgt = Convert.FromBase64String(item.ImageString);
-                        MemoryStream stream2 = new(imgt);
-                        ImageSource image = ImageSource.FromStream(() => stream2);
-                        model.ImgUser = image;
+                        model.ImgUser = item.ImageString;
                         listnew.Add(model);
                     }
                 }

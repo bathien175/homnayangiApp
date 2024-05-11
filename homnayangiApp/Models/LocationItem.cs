@@ -21,6 +21,7 @@ namespace homnayangiApp.Models
         private bool _isUserCreate = false;
         private bool isExecuteCMD = false;
         private bool _isClone = false;
+        private bool _isActive = false;
 
         public Location LocationCurrent { get => _locationCurrent;
             set
@@ -44,6 +45,13 @@ namespace homnayangiApp.Models
         public bool IsUserCreate { get => _isUserCreate; set => SetProperty(ref _isUserCreate, value); }
         public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
         public bool IsClone { get => _isClone; set => SetProperty(ref _isClone, value); }
+        public bool IsActive { get => _isActive; 
+            set 
+            { 
+                SetProperty(ref _isActive, value);
+                executeShareChangeCMD(value);
+            } 
+        }
 
         public LocationItem()
         {
@@ -52,7 +60,31 @@ namespace homnayangiApp.Models
             TransferCommand = new DelegateCommand(executeTransferCMD);
             CloneLocationCommand = new DelegateCommand<Location>(executeCloneLocationCMD);
         }
+        public async void executeShareChangeCMD(bool a)
+        {
+            if (IsExecuteCMD)
+                return;
 
+            IsExecuteCMD = true;
+            ILocationService locationService = new LocationService();
+            if (a)
+            {
+                LocationCurrent.IsShare = true;
+                await Task.Run(() =>
+                {
+                    locationService.Update(LocationCurrent.Id, LocationCurrent);
+                });
+            }
+            else
+            {
+                LocationCurrent.IsShare = false;
+                await Task.Run(() =>
+                {
+                    locationService.Update(LocationCurrent.Id, LocationCurrent);
+                });
+            }
+            IsExecuteCMD = false;
+        }
         private async void executeCloneLocationCMD(Location location)
         {
             if (IsExecuteCMD)

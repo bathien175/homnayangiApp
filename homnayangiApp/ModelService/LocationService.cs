@@ -94,7 +94,36 @@ namespace homnayangiApp.ModelService
 
         public async Task Update(string id, Models.Location location)
         {
-            await _firebase.Child("locations").Child(id).PutAsync(location);
+            if (location.Images == null)
+            {
+                await _firebase.Child("locations").Child(id).PutAsync(location);
+            }
+            else
+            {
+                var listnew = await getListImageFromLink(location.Images, id);
+                location.Images = listnew;
+                await _firebase.Child("locations").Child(id).PutAsync(location);
+            }
+        }
+        public async Task<List<string>> getListImageFromLink(List<string> links, string id)
+        {
+            List<string> listnew = new List<string>();
+            int index = 1;
+            foreach (var item in links)
+            {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    // Tải hình ảnh từ URL
+                    byte[] imageData = await httpClient.GetByteArrayAsync(item);
+                    // Tạo một MemoryStream từ dữ liệu hình ảnh
+                    using (MemoryStream memoryStream = new MemoryStream(imageData))
+                    {
+                        string s = await UploadLocationImage(id, index, memoryStream);
+                        listnew.Add(s);
+                    }
+                }
+            }
+            return  listnew;
         }
         public async Task<string> UploadLocationImage(string locateId,int index, Stream imageStream)
         {
@@ -124,6 +153,76 @@ namespace homnayangiApp.ModelService
                 .Select(x => x.Object)
                 .Where(x =>  x.IsShare == true && listSave.Contains(x.Id))
                 .ToList();
+        }
+
+        public async Task<string> UploadCacheImage(string userId, int index, Stream imageStream)
+        {
+            try
+            {
+                var task = new FirebaseStorage(DataService.ConnectStringFirebaseStorage, new FirebaseStorageOptions
+                {
+                    ThrowOnCancel = true,
+                })
+                    .Child("image_cache")
+                    .Child(userId)
+                    .Child(userId)
+                    .Child($"Image{index}.jpg")
+                    .PutAsync(imageStream);
+
+                var downloadlink = await task;
+                return downloadlink;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task DeleteCacheImage(string userId)
+        {
+            try
+            {
+                var task = new FirebaseStorage(DataService.ConnectStringFirebaseStorage, new FirebaseStorageOptions
+                {
+                    ThrowOnCancel = true,
+                })
+                    .Child("image_cache")
+                    .Child(userId)
+                    .DeleteAsync();
+
+                await task;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task DeleteImage(string locationID)
+        {
+            try
+            {
+                var task = new FirebaseStorage(DataService.ConnectStringFirebaseStorage, new FirebaseStorageOptions
+                {
+                    ThrowOnCancel = true,
+                })
+                    .Child("location_images")
+                    .Child(locationID)
+                    .DeleteAsync();
+                await task;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Models.Location>> GetCreateShare(string id)
+        {
+            return (await _firebase.Child("locations").OnceAsync<Models.Location>())
+                 .Select(x => x.Object)
+                 .Where(x => x.Creator == id && x.IsShare == true)
+                 .ToList();
         }
     }
 }

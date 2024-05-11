@@ -36,7 +36,7 @@ namespace homnayangiApp.ModelService.StoreSetting
 
         public async Task<List<User>> Get()
         {
-            return (await _firebase.Child("users").OnceAsync<User>()).Select(x => x.Object).ToList();
+            return (await _firebase.Child("users").OnceAsync<User>()).Select(x => x.Object).Where(x => x.IDUser!= "@admin@").ToList();
         }
 
         public async Task<User> Get(string id)

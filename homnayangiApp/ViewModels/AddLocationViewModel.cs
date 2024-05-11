@@ -10,8 +10,7 @@ namespace homnayangiApp.ViewModels
     public class AddLocationViewModel : BaseViewModel
     {
         private readonly ILocationService _locationService;
-        private List<string> listImageString = new List<string>();
-        private ObservableCollection<ImageSource> listImageSource = new ObservableCollection<ImageSource>();
+        private ObservableCollection<string> listImageString = new ObservableCollection<string>();
         private string citySelect = string.Empty;
         private string districtSelect = string.Empty;
         private List<Province> listCity = dataCity.Instance.listProvince;
@@ -26,40 +25,36 @@ namespace homnayangiApp.ViewModels
         private bool isOpen24H = false;
         private string phone = string.Empty;
         private string address = string.Empty;
-        private bool isEmpty = false;
+        private bool isEmpty = true;
         private string nameLocation = string.Empty;
         private bool isLoading = false;
+        private string locateIdCurrent = string.Empty;
+        private string locateIdCache = string.Empty;
+        private bool isAddNew = true;
+        private bool isShare = true;
+        private string creator = string.Empty;
+        private int _indexCurrent = 0;
+        private bool isExecuteCMD = false;
 
-        public List<string> ListImageString { get => listImageString; 
+        public DelegateCommand CreateLocationCMD { get; }
+        public DelegateCommand ChooseImageCMD { get; }
+        public DelegateCommand AddmageCMD { get; }
+        public DelegateCommand backPage { get; }
+        public DelegateCommand<String> removeImage { get; }
+
+        public ObservableCollection<string> ListImageString { get => listImageString; 
             set 
             { 
                 SetProperty(ref listImageString, value);
                 if (value.Count == 0)
                 {
                     IsEmpty = true;
-                    ListImageSource.Clear();
                 }
                 else
                 {
                     IsEmpty = false;
-                    ObservableCollection < ImageSource > listnew = new ObservableCollection < ImageSource >();
-                    foreach (var item in value)
-                    {
-                        //converting from base64string to image
-                        var imgt = Convert.FromBase64String(item);
-                        MemoryStream stream2 = new(imgt);
-                        ImageSource image = ImageSource.FromStream(() => stream2);
-                        listnew.Add(image);
-                    }
-                    ListImageSource = listnew;
                 }
             } 
-        }
-        public ObservableCollection<ImageSource> ListImageSource { get => listImageSource;
-            set
-            {
-                SetProperty(ref listImageSource, value);
-            }
         }
         public string CitySelect { get => citySelect; set => SetProperty(ref citySelect, value); }
         public string DistrictSelect { get => districtSelect; set => SetProperty(ref districtSelect, value); }
@@ -86,16 +81,74 @@ namespace homnayangiApp.ViewModels
         public string Phone { get => phone; set => SetProperty(ref phone, value); }
         public string Address { get => address; set => SetProperty(ref address, value); }
         public bool IsEmpty { get => isEmpty; set => SetProperty(ref isEmpty, value); }
+        public string NameLocation { get => nameLocation; set => SetProperty(ref nameLocation, value); }
+        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
+        public string LocateIdCurrent { get => locateIdCurrent; 
+            set 
+            { 
+                SetProperty(ref locateIdCurrent, value); 
+                if(value != string.Empty)
+                {
+                    IsAddNew = false;
+                    loadDataLocation(value);
+                }
+                else
+                {
+                    IsAddNew = true;
+                    IsEmpty = true;
+                    //LocateIdCache = GenerateRandomString(20);
+                }
+            } 
+        }
+
+        public bool IsAddNew { get => isAddNew; set => SetProperty(ref isAddNew, value); }
+        public bool IsShare { get => isShare; set => SetProperty(ref isShare, value); }
+        public string Creator { get => creator; set => SetProperty(ref creator, value); }
+        public string LocateIdCache { get => locateIdCache; set => SetProperty(ref locateIdCache, value); }
+        public int IndexCurrent { get => _indexCurrent; set => SetProperty(ref _indexCurrent, value); }
+        public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
 
         public AddLocationViewModel()
         {
             _locationService = new LocationService();
             loadTag();
-            ListImageString = new List<string>();
+            ListImageString = new ObservableCollection<string>();
             ChooseImageCMD = new DelegateCommand(executeChooseImageCMD);
+            AddmageCMD = new DelegateCommand(executeAddImageCMD);
             CreateLocationCMD = new DelegateCommand(executeCreateLocationCMD);
-            removeImage = new DelegateCommand<string>(executeRemoveImageCMD);
+            removeImage = new DelegateCommand<String>(executeRemoveImageCMD);
             backPage = new DelegateCommand(executebackPageCMD);
+        }
+
+        private async void executeAddImageCMD()
+        {
+            var pickImages = await FilePicker.PickMultipleAsync(new PickOptions()
+            {
+                FileTypes = FilePickerFileType.Images,
+                PickerTitle = "Chọn tối đa 10 ảnh"
+            });
+
+            if (pickImages != null)
+            {
+                if (pickImages.Count() + ListImageString.Count() > 10)
+                {
+                    await Shell.Current.DisplayAlert("Xin lỗi", "Chỉ được chọn tối đa 10 ảnh", "Đã hiểu");
+                }
+                else
+                {
+                    ObservableCollection<string> imagestringnew = new ObservableCollection<string>(ListImageString);
+                    foreach (var item in pickImages)
+                    {
+                        byte[] imageByte;
+                        var newFile = Path.Combine(FileSystem.CacheDirectory, item.FileName);
+                        var stream = await item.OpenReadAsync();
+                        string img = await _locationService.UploadCacheImage(dataLogin.Instance.currUser.Id, IndexCurrent, stream);
+                        IndexCurrent++;
+                        imagestringnew.Add(img);
+                    }
+                    ListImageString = imagestringnew;
+                }
+            }
         }
 
         private async void executebackPageCMD()
@@ -103,12 +156,12 @@ namespace homnayangiApp.ViewModels
             await Shell.Current.Navigation.PopAsync();
         }
 
-        private void executeRemoveImageCMD(string s)
+        public void executeRemoveImageCMD(String img)
         {
-            List<string> list = new List<string>();
+            ObservableCollection<string> list = new ObservableCollection<string>();
             foreach (var item in ListImageString)
             {
-                if(item != s)
+                if(item != img)
                 {
                     list.Add(item);
                 }
@@ -126,34 +179,86 @@ namespace homnayangiApp.ViewModels
 
             if(pickImages!= null)
             {
-                if(pickImages.Count() > 10)
+                if(pickImages.Count() + ListImageString.Count() > 10)
                 {
                     await Shell.Current.DisplayAlert("Xin lỗi", "Chỉ được chọn tối đa 10 ảnh", "Đã hiểu");
                 }
                 else
                 {
-                    List<string> imagestringnew = new List<string>();
+                    ObservableCollection<string> imagestringnew = new ObservableCollection<string>();
                     foreach (var item in pickImages)
                     {
                         byte[] imageByte;
                         var newFile = Path.Combine(FileSystem.CacheDirectory, item.FileName);
                         var stream = await item.OpenReadAsync();
-                        using (MemoryStream memory = new MemoryStream())
-                        {
-                            stream.CopyTo(memory);
-                            imageByte = memory.ToArray();
-                        }
-                        //converting to base64string
-                        var convertedImage = Convert.ToBase64String(imageByte);
-                        imagestringnew.Add(convertedImage);
+                        string img = await _locationService.UploadCacheImage(dataLogin.Instance.currUser.IDUser, IndexCurrent, stream);
+                        IndexCurrent++;
+                        imagestringnew.Add(img);
                     }
                     ListImageString = imagestringnew;
                 }
             }
         }
-
+        private async void loadDataLocation(string id)
+        {
+            var s = await _locationService.Get(id);
+            NameLocation = s.Name;
+            Phone = s.HotLine;
+            IsOpen24H = s.IsOpen24H;
+            if (!IsOpen24H)
+            {
+                OpenTime = s.OpenTime.Value;
+                CloseTime = s.CloseTime.Value;
+            }
+            Address = s.Address;
+            var pselect = ListCity.Where(x => x.province_name == s.Province).First();
+            CityIndexSelect = ListCity.IndexOf(pselect);
+            DistrictSelect = s.District;
+            MaxPrice = s.MaxPrice;
+            MinPrice = s.MinPrice;
+            Creator = s.Creator;
+            IsShare = s.IsShare;
+            if (s.Images == null)
+            {
+                IsEmpty = true;
+            }
+            else
+            {
+                IsEmpty = false;
+                var listn = await loadImageOld(s.Images);
+                ListImageString = new ObservableCollection<string>(listn);
+            }
+            TagSelect = new ObservableCollection<string>(s.Tags);
+        }
+        private async Task<List<string>> loadImageOld(List<string>? images)
+        {
+            List<string> listnew = [];
+            if (images!= null)
+            {
+                foreach (var image in images)
+                {
+                    using (HttpClient httpClient = new HttpClient())
+                    {
+                        // Tải hình ảnh từ URL
+                        byte[] imageData = await httpClient.GetByteArrayAsync(image);
+                        // Tạo một MemoryStream từ dữ liệu hình ảnh
+                        using (MemoryStream memoryStream = new MemoryStream(imageData))
+                        {
+                            string s = await _locationService.UploadCacheImage(dataLogin.Instance.currUser.Id,IndexCurrent,memoryStream);
+                            IndexCurrent++;
+                            listnew.Add(s);
+                        }
+                    }
+                }
+            }
+            return listnew;
+        }
         private async void executeCreateLocationCMD()
         {
+            if(IsExecuteCMD)
+            { return; }
+
+            IsExecuteCMD = true;
             if (CloseTime <= OpenTime && IsOpen24H == false)
             {
                 await Shell.Current.DisplayAlert("Thất bại!","Thời gian hoạt động không hợp lệ! Vui lòng kiểm tra và thử lại","OK");
@@ -173,67 +278,98 @@ namespace homnayangiApp.ViewModels
             } 
             else
             {
-                IsLoading = true;
                 try
                 {
-                    Models.Location l = new Models.Location
+                    if(IsAddNew == true)
                     {
-                        Name = NameLocation,
-                        HotLine = Phone,
-                        Address = Address,
-                        Province = CitySelect,
-                        District = DistrictSelect
-                    };
-                    if (IsOpen24H)
-                    {
-                        l.IsOpen24H = true;
-                        l.OpenTime = null;
-                        l.CloseTime = null;
+                        Models.Location l = new Models.Location
+                        {
+                            Name = NameLocation,
+                            HotLine = Phone,
+                            Address = Address,
+                            Province = CitySelect,
+                            District = DistrictSelect
+                        };
+                        if (IsOpen24H)
+                        {
+                            l.IsOpen24H = true;
+                            l.OpenTime = null;
+                            l.CloseTime = null;
+                        }
+                        else
+                        {
+                            l.IsOpen24H = false;
+                            l.OpenTime = OpenTime;
+                            l.CloseTime = CloseTime;
+                        }
+                        l.MinPrice = MinPrice;
+                        l.MaxPrice = MaxPrice;
+                        if (dataLogin.Instance.IsAdmin)
+                        {
+                            l.Creator = null;
+                        }
+                        else
+                        {
+                            l.Creator = dataLogin.Instance.currUser.Id;
+                        }
+                        if (ListImageString.Count > 0)
+                        {
+                            l.Images = await Base64Converter.ConvertUrlsToBase64Strings(ListImageString);
+                        }
+                        else
+                        {
+                            l.Images = null;
+                        }
+                        l.Tags = new List<String>(TagSelect);
+                        l.IsShare = IsShare;
+                        await _locationService.Create(l);
+                        await Shell.Current.DisplayAlert("Thành công!", "Tạo địa điểm mới thành công!", "OK");
+                        await Shell.Current.Navigation.PopAsync();
                     }
                     else
                     {
-                        l.IsOpen24H = false;
-                        l.OpenTime = OpenTime;
-                        l.CloseTime = CloseTime;
+                        var find = await _locationService.Get(LocateIdCurrent);
+                        find.Name = NameLocation;
+                        find.MaxPrice = MaxPrice;
+                        find.MinPrice = MinPrice;
+                        if (IsOpen24H)
+                        {
+                            find.IsOpen24H = true;
+                            find.OpenTime = null;
+                            find.CloseTime = null;
+                        }
+                        else
+                        {
+                            find.IsOpen24H = false;
+                            find.OpenTime = OpenTime;
+                            find.CloseTime = CloseTime;
+                        }
+                        find.District = DistrictSelect;
+                        find.Province = CitySelect;
+                        find.Address = Address;
+                        find.HotLine = Phone;
+                        if (ListImageString.Count > 0)
+                        {
+                            find.Images = new List<string>( ListImageString);
+                        }
+                        else
+                        {
+                            find.Images = null;
+                        }
+                        find.Tags = new List<String>(TagSelect);
+                        find.IsShare = IsShare;
+                        await _locationService.Update(find.Id,find);
+                        await Shell.Current.DisplayAlert("Thành công!", "Sửa địa điểm thành công!", "OK");
+                        await Shell.Current.Navigation.PopAsync();
                     }
-                    l.MinPrice = MinPrice;
-                    l.MaxPrice = MaxPrice;
-                    if (dataLogin.Instance.IsAdmin)
-                    {
-                        l.Creator = null;
-                    }
-                    else
-                    {
-                        l.Creator = dataLogin.Instance.currUser.Id;
-                    }
-                    if (ListImageString.Count > 0)
-                    {
-                        l.Images = ListImageString;
-                    }
-                    else
-                    {
-                        l.Images = null;
-                    }
-                    l.Tags = new List<String>(TagSelect);
-                    l.IsShare = true;
-                    await _locationService.Create(l);
-                    await Shell.Current.DisplayAlert("Thành công!", "Tạo địa điểm mới thành công!", "OK");
-                    IsLoading = false;
                 }
                 catch (Exception)
                 {
                     await Shell.Current.DisplayAlert("Thất bại!", "Server xảy ra lỗi! Không thể ghi dữ liệu!", "Thử lại");
-                    IsLoading = false;
                 }
             }
+            IsExecuteCMD = false;
         }
-
-        public DelegateCommand CreateLocationCMD { get; }
-        public DelegateCommand ChooseImageCMD { get; }
-        public DelegateCommand backPage { get; }
-        public DelegateCommand<string> removeImage { get; }
-        public string NameLocation { get => nameLocation; set => SetProperty(ref nameLocation, value) ; }
-        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
 
         private async void loadTag()
         {

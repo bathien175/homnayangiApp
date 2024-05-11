@@ -110,9 +110,7 @@ namespace homnayangiApp.ViewModels
             if (IsExecuteCMD == true)
                 return;
             IsExecuteCMD = true;
-            IsLoading = true;
             var v = await Task.Run(() => new AccountManagerView());
-            IsLoading = false;
             await Shell.Current.Navigation.PushModalAsync(v);
             IsExecuteCMD = false;
         }
@@ -186,6 +184,7 @@ namespace homnayangiApp.ViewModels
                 u.IDUser = CurentUser.IDUser;
                 u.Name = NameUser;
                 u.Gender = GenderUser;
+                u.CloneLocation = CurentUser.CloneLocation;
                 u.DateBirth = DatebirthUser.ToString("dd-MM-yyyy");
                 u.Password = CurentUser.Password;
                 u.City = CityUser;

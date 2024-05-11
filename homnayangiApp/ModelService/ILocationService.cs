@@ -12,6 +12,7 @@ namespace homnayangiApp.ModelService
         Task<List<Models.Location>> GetIsShare();
         Task<List<Models.Location>> GetNear(string province, string district);
         Task<List<Models.Location>> GetCreate(string id);
+        Task<List<Models.Location>> GetCreateShare(string id);
         Task<List<Models.Location>> GetByTag(List<String> listtag);
         Task<List<Models.Location>> GetSaveLocation(List<String> listSave);
         Task<List<Models.Location>> Search(string name);
@@ -19,6 +20,9 @@ namespace homnayangiApp.ModelService
         Task<Models.Location> Create(Models.Location location);
         Task Update(string id, Models.Location location);
         Task Remove(string id);
-        Task<string> UploadLocationImage(string userId, int index, Stream imageStream);
+        Task<string> UploadLocationImage(string locateId, int index, Stream imageStream);
+        Task<string> UploadCacheImage(string userId, int index, Stream imageStream);
+        Task DeleteCacheImage(string userId);
+        Task DeleteImage(string locationID);
     }
 }

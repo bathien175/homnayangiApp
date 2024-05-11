@@ -17,27 +17,60 @@ namespace homnayangiApp.ViewModels
         private readonly ILocationService _locationService;
         private ObservableCollection<LocationItem> listLocat = new ObservableCollection<LocationItem>();
         private bool isLoading = false;
-
+        private bool isExecuteCMD = false;
         public DelegateCommand backPage { get; }
         public DelegateCommand gotoAddLocation { get; }
+        public DelegateCommand<string> UpdateLocation { get; }
+        public DelegateCommand<string> DeleteLocation { get; }
         public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
         public ObservableCollection<LocationItem> ListLocat { get => listLocat; set => SetProperty(ref listLocat, value); }
-
+        public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
 
         public ListUserCreateViewModel()
         {
             _locationService = new LocationService();
             loadLocation();
+            UpdateLocation = new DelegateCommand<string>(executeUpdateCMD);
+            DeleteLocation = new DelegateCommand<string>(executeDeleteCMD);
             backPage = new DelegateCommand(executeBackPageCMD);
             gotoAddLocation = new DelegateCommand(executeAddLocation);
         }
 
+
+        private async void executeDeleteCMD(string s)
+        {
+            var result = await Shell.Current.DisplayAlert("Chờ đã!","Bạn có thực sự muốn xóa đi địa điểm này chứ?","Có","Không");
+            if(result)
+            {
+                await _locationService.Remove(s);
+                loadLocation();
+            }
+        }
+
+        private async void executeUpdateCMD(string obj)
+        {
+            if (IsExecuteCMD == true)
+                return;
+
+            IsExecuteCMD = true;
+            var vm = await Task.Run(() => new ViewModels.AddLocationViewModel());
+            vm.LocateIdCurrent = obj;
+            var v = await Task.Run(() => new Views.AdminAddLocationView() { BindingContext = vm});
+            await Shell.Current.Navigation.PushAsync(v);
+            IsExecuteCMD = false;
+        }
+
         private async void executeAddLocation()
         {
-            IsLoading = true;
-            var v = await Task.Run(() => new Views.AdminAddLocationView());
+            if (IsExecuteCMD == true)
+                return;
+
+            IsExecuteCMD = true;
+            var vm = await Task.Run(() => new ViewModels.AddLocationViewModel());
+            vm.LocateIdCurrent = string.Empty;
+            var v = await Task.Run(() => new Views.AdminAddLocationView() { BindingContext = vm });
             await Shell.Current.Navigation.PushAsync(v);
-            IsLoading = false;
+            IsExecuteCMD = false;
         }
 
         private async void executeBackPageCMD()
@@ -57,6 +90,7 @@ namespace homnayangiApp.ViewModels
                     {
                         LocationItem model = new LocationItem();
                         model.LocationCurrent = item;
+                        model.IsActive = item.IsShare;
                         listnew2.Add(model);
                     }
                 }

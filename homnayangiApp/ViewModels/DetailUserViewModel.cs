@@ -54,7 +54,7 @@ namespace homnayangiApp.ViewModels
         public async void LoadLocation()
         {
             IsLoading = true;
-            var list = await Task.Run(() => _locationService.GetCreate(UserCurrent.Id));
+            var list = await Task.Run(() => _locationService.GetCreateShare(UserCurrent.Id));
             var listnew = new ObservableCollection<LocationItem>();
             if (list.Count > 0)
             {
