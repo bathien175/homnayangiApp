@@ -17,18 +17,15 @@ namespace homnayangiApp.ViewModels
     public class ForgotPasswordViewModel : BaseViewModel
     {
         private readonly IUserService _userService;
-        private ObservableCollection<FindUserModel> listFull = new ObservableCollection<FindUserModel>();
         private ObservableCollection<FindUserModel> listFilter = new ObservableCollection<FindUserModel>();
         private string textFilter = String.Empty;
         private bool isLoading = false;
-
-        public ObservableCollection<FindUserModel> ListFull { get => listFull; set => SetProperty(ref listFull, value); }
+        public DelegateCommand searchCMD { get; }
         public ObservableCollection<FindUserModel> ListFilter { get => listFilter; set => SetProperty(ref listFilter, value); }
         public string TextFilter { get => textFilter; 
             set 
             { 
                 SetProperty(ref textFilter, value);
-                loadFilter(value);
             } 
         }
         public DelegateCommand<string> restoreCMD { get; }
@@ -39,20 +36,15 @@ namespace homnayangiApp.ViewModels
         {
             _userService = new UserService();
             restoreCMD = new DelegateCommand<string>(executeRestoreCMD);
-            loadData();
+            searchCMD = new DelegateCommand(executeSearchCMD);
             BackToLoginCmd = new DelegateCommand(executeBackToLoginCMD);
         }
 
-        private async void executeBackToLoginCMD()
-        {
-            await Shell.Current.GoToAsync("//Login");
-        }
-
-        private async void loadData()
+        private async void executeSearchCMD()
         {
             IsLoading = true;
             ObservableCollection<FindUserModel> listnew = [];
-            var l = await _userService.Get();
+            var l = await _userService.SearchUserForgot(TextFilter);
             if (l.Count > 0)
             {
                 foreach (var item in l)
@@ -63,16 +55,22 @@ namespace homnayangiApp.ViewModels
                     model.PhoneFakeUser = MaskPhoneNumber(item.Phone);
                     model.ImageString = item.ImageData;
                     model.RestorePassword = restoreCMD;
+                    model.ImgUser = item.ImageData;
                     listnew.Add(model);
                 }
             }
-            ListFull = listnew;
+            ListFilter = listnew;
             IsLoading = false;
+        }
+
+        private async void executeBackToLoginCMD()
+        {
+            await Shell.Current.GoToAsync("//Login");
         }
 
         private async void executeRestoreCMD(string sdt)
         {
-            var result = await Shell.Current.DisplayTextPromptAsync("Xác nhận số điện thoại!", "Vui lòng nhập đúng với số điện thoại bạn đã đăng ký", placeholder: "VD: 0987654321");
+            var result = await Shell.Current.DisplayPromptAsync("Xác nhận số điện thoại!", "Vui lòng nhập đúng với số điện thoại bạn đã đăng ký", placeholder: "VD: 0987654321");
             if (result == sdt)
             {
                 IsLoading = true;
@@ -95,32 +93,32 @@ namespace homnayangiApp.ViewModels
                 IsLoading = false;
             }
         }
-        private void loadFilter(string s)
-        {
-            if (s == "")
-            {
-                ListFilter.Clear();
-            }
-            else
-            {
-                ObservableCollection<FindUserModel> listnew = new ObservableCollection<FindUserModel>();
-                var list2 = new ObservableCollection<FindUserModel>(ListFull.Where(x => x.NameUser.ToLower().Contains(s.ToLower())).ToList());
-                if (list2.Count > 0)
-                {
-                    foreach (var item in list2)
-                    {
-                        FindUserModel model = new FindUserModel();
-                        model.PhoneFakeUser = item.PhoneFakeUser;
-                        model.NameUser = item.NameUser;
-                        model.PhoneRealUser = item.PhoneRealUser;
-                        model.RestorePassword = item.RestorePassword;
-                        model.ImgUser = item.ImageString;
-                        listnew.Add(model);
-                    }
-                }
-                ListFilter = listnew;
-            }
-        }
+        //private void loadFilter(string s)
+        //{
+        //    if (s == "")
+        //    {
+        //        ListFilter.Clear();
+        //    }
+        //    else
+        //    {
+        //        ObservableCollection<FindUserModel> listnew = new ObservableCollection<FindUserModel>();
+        //        var list2 = new ObservableCollection<FindUserModel>(ListFull.Where(x => x.NameUser.ToLower().Contains(s.ToLower())).ToList());
+        //        if (list2.Count > 0)
+        //        {
+        //            foreach (var item in list2)
+        //            {
+        //                FindUserModel model = new FindUserModel();
+        //                model.PhoneFakeUser = item.PhoneFakeUser;
+        //                model.NameUser = item.NameUser;
+        //                model.PhoneRealUser = item.PhoneRealUser;
+        //                model.RestorePassword = item.RestorePassword;
+        //                model.ImgUser = item.ImageString;
+        //                listnew.Add(model);
+        //            }
+        //        }
+        //        ListFilter = listnew;
+        //    }
+        //}
         static string MaskPhoneNumber(string phoneNumber)
         {
             if (phoneNumber.Length <= 2)

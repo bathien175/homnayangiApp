@@ -137,5 +137,14 @@ namespace homnayangiApp.ModelService.StoreSetting
                 .Where(x => x.IDUser != "@admin@" && x.IDUser != idCurrent && x.IDUser.ToLower().Contains(idU.ToLower()))
                 .ToList();
         }
+
+        public async Task<List<User>> SearchUserForgot(string name)
+        {
+            return (await _firebase.Child("users")
+                .OnceAsync<User>())
+                .Select(x => x.Object)
+                .Where(x => x.IDUser != "@admin@" && x.Name.ToLower().Contains(name.ToLower()))
+                .ToList();
+        }
     }
 }

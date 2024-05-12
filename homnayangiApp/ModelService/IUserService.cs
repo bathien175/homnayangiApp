@@ -14,6 +14,7 @@ namespace homnayangiApp.ModelService
         Task<User> Get(string id);
         Task<User> GetbyPhone(string phone);
         Task<List<User>> SearchUser(string idU, string idCurrent);
+        Task<List<User>> SearchUserForgot(string name);
         Task<User> Create(User user);
         Task Update(string id, User user);
         Task Remove(string id);
