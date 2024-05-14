@@ -133,15 +133,13 @@ namespace homnayangiApp.ModelService
                 List<string> strings = [];
                 foreach (var item in location.Images)
                 {
-                    using (HttpClient httpClient = new HttpClient())
-                    {
-                        byte[] imageBytes = await httpClient.GetByteArrayAsync(item);
-                        MemoryStream stream = new MemoryStream(imageBytes);
-                        stream.Position = 0;
-                        string s = await UploadLocationImage(location.Id, index, stream);
-                        strings.Add(s);
-                        index++;
-                    }
+                    var imagebyte = Convert.FromBase64String(item);
+                    MemoryStream stream = new MemoryStream(imagebyte);
+                    stream.Position = 0;
+                    string s = await UploadLocationImage(location.Id, index, stream);
+                    strings.Add(s);
+                    index++;
+                    
                 }
                 location.Images = strings;
                 await _firebase.Child("locations").Child(id).PutAsync(location);
