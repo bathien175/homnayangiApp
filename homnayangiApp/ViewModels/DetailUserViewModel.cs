@@ -69,13 +69,6 @@ namespace homnayangiApp.ViewModels
                             model.IsSave = true;
                         }
                     }
-                    if(dataLogin.Instance.currUser.CloneLocation != null)
-                    {
-                        if (dataLogin.Instance.currUser.CloneLocation.Where(x => x == item.Id).FirstOrDefault() != null)
-                        {
-                            model.IsClone = true;
-                        }
-                    }
                     listnew.Add(model);
                 }
             }

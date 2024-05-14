@@ -20,7 +20,6 @@ namespace homnayangiApp.Models
         private bool _isSave = false;
         private bool _isUserCreate = false;
         private bool isExecuteCMD = false;
-        private bool _isClone = false;
         private bool _isActive = false;
 
         public Location LocationCurrent { get => _locationCurrent;
@@ -44,7 +43,6 @@ namespace homnayangiApp.Models
         public DelegateCommand TransferCommand { get; }
         public bool IsUserCreate { get => _isUserCreate; set => SetProperty(ref _isUserCreate, value); }
         public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
-        public bool IsClone { get => _isClone; set => SetProperty(ref _isClone, value); }
         public bool IsActive { get => _isActive; 
             set 
             { 
@@ -87,50 +85,28 @@ namespace homnayangiApp.Models
 
             IsExecuteCMD = true;
             IUserService userService = new UserService();
-            if (IsClone)
+            await Task.Run(() =>
             {
-                await Shell.Current.DisplayAlert("Cảnh báo!","Địa điểm này đã được lưu!","Đã hiểu");
-            }
-            else
-            {
-                IsClone = true;
-                await Task.Run(() =>
+                ILocationService locationService = new LocationService();
+                Location l = new Location()
                 {
-                    if (dataLogin.Instance.currUser.CloneLocation == null)
-                    {
-                        dataLogin.Instance.currUser.CloneLocation = new List<string>();
-                        dataLogin.Instance.currUser.CloneLocation.Add(LocationCurrent.Id);
-                        userService.Update(dataLogin.Instance.currUser.Id, dataLogin.Instance.currUser);
-                    }
-                    else
-                    {
-                        dataLogin.Instance.currUser.CloneLocation.Add(LocationCurrent.Id);
-                        userService.Update(dataLogin.Instance.currUser.Id, dataLogin.Instance.currUser);
-                    }
-                });
-                await Task.Run(() =>
-                {
-                    ILocationService locationService = new LocationService();
-                    Location l = new Location()
-                    {
-                        Name = location.Name,
-                        Address = location.Address,
-                        CloseTime = location.CloseTime,
-                        District = location.District,
-                        HotLine = location.HotLine,
-                        Images = location.Images,
-                        IsOpen24H = location.IsOpen24H,
-                        IsShare = true,
-                        MaxPrice = location.MaxPrice,
-                        MinPrice = location.MinPrice,
-                        OpenTime = location.OpenTime,
-                        Province = location.Province,
-                        Tags = location.Tags,
-                        Creator = dataLogin.Instance.currUser.Id
-                    };
-                    locationService.Create(l);
-                });
-            }
+                    Name = location.Name,
+                    Address = location.Address,
+                    CloseTime = location.CloseTime,
+                    District = location.District,
+                    HotLine = location.HotLine,
+                    Images = location.Images,
+                    IsOpen24H = location.IsOpen24H,
+                    IsShare = true,
+                    MaxPrice = location.MaxPrice,
+                    MinPrice = location.MinPrice,
+                    OpenTime = location.OpenTime,
+                    Province = location.Province,
+                    Tags = location.Tags,
+                    Creator = dataLogin.Instance.currUser.Id
+                };
+                locationService.CreateClone(l);
+            });
             IsExecuteCMD = false;
         }
 

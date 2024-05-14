@@ -1,6 +1,7 @@
 ﻿using Firebase.Database;
 using Firebase.Database.Query;
 using Firebase.Storage;
+using System.Net.Http;
 
 namespace homnayangiApp.ModelService
 {
@@ -30,6 +31,34 @@ namespace homnayangiApp.ModelService
                         string s = await UploadLocationImage(location.Id, index, stream);
                         strings.Add(s);
                         index++;
+                    }
+                    location.Images = strings;
+                }
+                await Update(result.Key, location);
+            }
+            return location;
+        }
+        public async Task<Models.Location> CreateClone(Models.Location location)
+        {
+            var result = await _firebase.Child("locations").PostAsync(location);
+            if (!String.IsNullOrEmpty(result.Key))
+            {
+                location.Id = result.Key;
+                int index = 1;
+                if (location.Images != null)
+                {
+                    List<string> strings = [];
+                    foreach (var item in location.Images)
+                    {
+                        using (HttpClient httpClient = new HttpClient())
+                        {
+                            byte[] imageBytes = await httpClient.GetByteArrayAsync(item);
+                            MemoryStream stream = new MemoryStream(imageBytes);
+                            stream.Position = 0;
+                            string s = await UploadLocationImage(location.Id, index, stream);
+                            strings.Add(s);
+                            index++;
+                        }
                     }
                     location.Images = strings;
                 }

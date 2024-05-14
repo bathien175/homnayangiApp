@@ -18,6 +18,7 @@ namespace homnayangiApp.ModelService
         Task<List<Models.Location>> Search(string name);
         Task<Models.Location> Get(string id);
         Task<Models.Location> Create(Models.Location location);
+        Task<Models.Location> CreateClone(Models.Location location);
         Task Update(string id, Models.Location location);
         Task Remove(string id);
         Task<string> UploadLocationImage(string locateId, int index, Stream imageStream);
