@@ -54,6 +54,7 @@ namespace homnayangiApp.ViewModels
             if(dataSignIn.Instance.userDistrict == string.Empty)
             {
                 //chưa set dữ liệu
+                City = 0;
                 DistrictSelect = ListDistrict[0];
             }
             else
@@ -75,7 +76,7 @@ namespace homnayangiApp.ViewModels
         private async void executeBackStepCMD()
         {
             saveData();
-            await Shell.Current.GoToAsync("//SignInStep3");
+            await Shell.Current.GoToAsync("//SignInStep2");
         }
         void saveData()
         {

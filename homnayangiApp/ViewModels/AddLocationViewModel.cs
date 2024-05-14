@@ -4,6 +4,7 @@ using homnayangiApp.Models;
 using homnayangiApp.ModelService;
 using homnayangiApp.ViewModels.Base;
 using System.Collections.ObjectModel;
+using static FFImageLoading.Work.ImageInformation;
 
 namespace homnayangiApp.ViewModels
 {
@@ -33,7 +34,6 @@ namespace homnayangiApp.ViewModels
         private bool isAddNew = true;
         private bool isShare = true;
         private string creator = string.Empty;
-        private int _indexCurrent = 0;
         private bool isExecuteCMD = false;
 
         public DelegateCommand CreateLocationCMD { get; }
@@ -105,13 +105,13 @@ namespace homnayangiApp.ViewModels
         public bool IsShare { get => isShare; set => SetProperty(ref isShare, value); }
         public string Creator { get => creator; set => SetProperty(ref creator, value); }
         public string LocateIdCache { get => locateIdCache; set => SetProperty(ref locateIdCache, value); }
-        public int IndexCurrent { get => _indexCurrent; set => SetProperty(ref _indexCurrent, value); }
         public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
 
         public AddLocationViewModel()
         {
             _locationService = new LocationService();
             loadTag();
+            CityIndexSelect = 0;
             ListImageString = new ObservableCollection<string>();
             ChooseImageCMD = new DelegateCommand(executeChooseImageCMD);
             AddmageCMD = new DelegateCommand(executeAddImageCMD);
@@ -136,17 +136,21 @@ namespace homnayangiApp.ViewModels
                 }
                 else
                 {
-                    ObservableCollection<string> imagestringnew = new ObservableCollection<string>(ListImageString);
                     foreach (var item in pickImages)
                     {
                         byte[] imageByte;
                         var newFile = Path.Combine(FileSystem.CacheDirectory, item.FileName);
                         var stream = await item.OpenReadAsync();
-                        string img = await _locationService.UploadCacheImage(dataLogin.Instance.currUser.Id, IndexCurrent, stream);
-                        IndexCurrent++;
-                        imagestringnew.Add(img);
+                        using (MemoryStream memory = new MemoryStream())
+                        {
+                            stream.CopyTo(memory);
+                            imageByte = memory.ToArray();
+                        }
+
+                        //converting to base64string
+                        var convertedImage = Convert.ToBase64String(imageByte);
+                        ListImageString.Add(convertedImage);
                     }
-                    ListImageString = imagestringnew;
                 }
             }
         }
@@ -191,9 +195,15 @@ namespace homnayangiApp.ViewModels
                         byte[] imageByte;
                         var newFile = Path.Combine(FileSystem.CacheDirectory, item.FileName);
                         var stream = await item.OpenReadAsync();
-                        string img = await _locationService.UploadCacheImage(dataLogin.Instance.currUser.IDUser, IndexCurrent, stream);
-                        IndexCurrent++;
-                        imagestringnew.Add(img);
+                        using (MemoryStream memory = new MemoryStream())
+                        {
+                            stream.CopyTo(memory);
+                            imageByte = memory.ToArray();
+                        }
+
+                        //converting to base64string
+                        var convertedImage = Convert.ToBase64String(imageByte);
+                        imagestringnew.Add(convertedImage);
                     }
                     ListImageString = imagestringnew;
                 }
@@ -242,12 +252,8 @@ namespace homnayangiApp.ViewModels
                         // Tải hình ảnh từ URL
                         byte[] imageData = await httpClient.GetByteArrayAsync(image);
                         // Tạo một MemoryStream từ dữ liệu hình ảnh
-                        using (MemoryStream memoryStream = new MemoryStream(imageData))
-                        {
-                            string s = await _locationService.UploadCacheImage(dataLogin.Instance.currUser.Id,IndexCurrent,memoryStream);
-                            IndexCurrent++;
-                            listnew.Add(s);
-                        }
+                        var convertedImage = Convert.ToBase64String(imageData);
+                        listnew.Add(convertedImage);
                     }
                 }
             }
@@ -314,7 +320,7 @@ namespace homnayangiApp.ViewModels
                         }
                         if (ListImageString.Count > 0)
                         {
-                            l.Images = await Base64Converter.ConvertUrlsToBase64Strings(ListImageString);
+                            l.Images = new List<string>(ListImageString);
                         }
                         else
                         {

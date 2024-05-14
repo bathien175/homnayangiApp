@@ -11,8 +11,7 @@
              xmlns:custom="clr-namespace:homnayangiApp.CustomControls"
              NavigationPage.HasNavigationBar="False"
              x:DataType="viewmodel:AccountManagerViewModel"
-             Appearing="ContentPage_Appearing"
-             IsBusy="{Binding IsLoading}">
+             Appearing="ContentPage_Appearing">
     <ContentPage.Resources>
         <custom:ConvertImageSource x:Key="ImageConvert" />
     </ContentPage.Resources>

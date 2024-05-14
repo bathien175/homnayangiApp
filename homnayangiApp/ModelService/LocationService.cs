@@ -129,30 +129,23 @@ namespace homnayangiApp.ModelService
             }
             else
             {
-                var listnew = await getListImageFromLink(location.Images, id);
-                location.Images = listnew;
-                await _firebase.Child("locations").Child(id).PutAsync(location);
-            }
-        }
-        public async Task<List<string>> getListImageFromLink(List<string> links, string id)
-        {
-            List<string> listnew = new List<string>();
-            int index = 1;
-            foreach (var item in links)
-            {
-                using (HttpClient httpClient = new HttpClient())
+                int index = 1;
+                List<string> strings = [];
+                foreach (var item in location.Images)
                 {
-                    // Tải hình ảnh từ URL
-                    byte[] imageData = await httpClient.GetByteArrayAsync(item);
-                    // Tạo một MemoryStream từ dữ liệu hình ảnh
-                    using (MemoryStream memoryStream = new MemoryStream(imageData))
+                    using (HttpClient httpClient = new HttpClient())
                     {
-                        string s = await UploadLocationImage(id, index, memoryStream);
-                        listnew.Add(s);
+                        byte[] imageBytes = await httpClient.GetByteArrayAsync(item);
+                        MemoryStream stream = new MemoryStream(imageBytes);
+                        stream.Position = 0;
+                        string s = await UploadLocationImage(location.Id, index, stream);
+                        strings.Add(s);
+                        index++;
                     }
                 }
+                location.Images = strings;
+                await _firebase.Child("locations").Child(id).PutAsync(location);
             }
-            return  listnew;
         }
         public async Task<string> UploadLocationImage(string locateId,int index, Stream imageStream)
         {

@@ -16,6 +16,8 @@ namespace homnayangiApp.ViewModels
     {
         private readonly ILocationService _locationService;
         private ObservableCollection<LocationItem> listLocat = new ObservableCollection<LocationItem>();
+        private ObservableCollection<LocationItem> listLocatFilter = new ObservableCollection<LocationItem>();
+        private string textSearch = string.Empty;
         private bool isLoading = false;
         private bool isExecuteCMD = false;
         public DelegateCommand backPage { get; }
@@ -23,8 +25,21 @@ namespace homnayangiApp.ViewModels
         public DelegateCommand<string> UpdateLocation { get; }
         public DelegateCommand<string> DeleteLocation { get; }
         public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
-        public ObservableCollection<LocationItem> ListLocat { get => listLocat; set => SetProperty(ref listLocat, value); }
+        public ObservableCollection<LocationItem> ListLocat { get => listLocat; set { SetProperty(ref listLocat, value); filterListLocate(); } }
         public bool IsExecuteCMD { get => isExecuteCMD; set => SetProperty(ref isExecuteCMD, value); }
+        public ObservableCollection<LocationItem> ListLocatFilter { get => listLocatFilter; set => SetProperty(ref listLocatFilter, value); }
+        public string TextSearch { get => textSearch; 
+            set 
+            { 
+                SetProperty(ref textSearch, value);
+                filterListLocate();
+            } 
+        }
+
+        private void filterListLocate()
+        {
+            ListLocatFilter = new ObservableCollection<LocationItem>(ListLocat.Where(x => x.LocationCurrent.Name.ToLower().Contains(TextSearch.ToLower())));
+        }
 
         public ListUserCreateViewModel()
         {

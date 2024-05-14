@@ -14,7 +14,7 @@
     <ContentPage.Resources>
         <custom:ConvertMoney x:Key="MoneyConvert" />
         <custom:BooleanInverseConverter x:Key="BooleanConvert" />
-        <custom:ConvertImageSource x:Key="ImageConvert" />
+        <custom:ConvertBase64String x:Key="ImageConvert" />
         <custom:ConvertString x:Key="convertString" />
     </ContentPage.Resources>
     <ContentPage.BindingContext>
@@ -28,7 +28,7 @@
         <Grid Background="{StaticResource Primary}">
             <Label VerticalOptions="Center"
                    HorizontalOptions="Center"
-                   Text="Tạo địa điểm"
+                   Text="Thêm / Sửa địa điểm"
                    FontAttributes="Bold"
                    FontSize="Medium"
                    TextColor="White"/>
@@ -139,7 +139,7 @@
                                               WidthRequest="100">
                                             <Image WidthRequest="90"
                                                    HeightRequest="90"
-                                                   Source="{Binding .}"
+                                                   Source="{Binding ., Converter={StaticResource ImageConvert}}"
                                                    VerticalOptions="End" />
                                             <Border Stroke="Black"
                                                     StrokeShape="RoundRectangle 150"

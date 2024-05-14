@@ -22,6 +22,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0"
@@ -53,8 +54,16 @@
                     VerticalOptions="Center"
                     Command="{Binding gotoAddLocation}"/>
         </Grid>
-        <CollectionView ItemsSource="{Binding ListLocat}"
-                        Grid.Row="1"
+        <SearchBar VerticalOptions="Center"
+                       TextColor="Black"
+                       Text="{Binding TextSearch}"
+                       FontSize="16"
+                       Grid.Row="1"
+                       Margin="0,20,20,0" 
+                       Placeholder="Tìm kiếm nhanh..." 
+                       CancelButtonColor="Red"/>
+        <CollectionView ItemsSource="{Binding ListLocatFilter}"
+                        Grid.Row="2"
                         Margin="20" >
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
