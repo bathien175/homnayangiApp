@@ -62,10 +62,6 @@ namespace homnayangiApp.Models
         }
         public async void executeShareChangeCMD(bool a)
         {
-            if (IsExecuteCMD)
-                return;
-
-            IsExecuteCMD = true;
             ILocationService locationService = new LocationService();
             if (a)
             {
@@ -83,7 +79,6 @@ namespace homnayangiApp.Models
                     locationService.Update(LocationCurrent.Id, LocationCurrent);
                 });
             }
-            IsExecuteCMD = false;
         }
         private async void executeCloneLocationCMD(Location location)
         {

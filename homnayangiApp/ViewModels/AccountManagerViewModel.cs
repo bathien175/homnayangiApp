@@ -80,12 +80,20 @@ namespace homnayangiApp.ViewModels
 
         private async void executeGoToCommunityCMD()
         {
+            if (IsExecuteCMD == true)
+                return;
+            IsExecuteCMD = true;
             await Shell.Current.Navigation.PushModalAsync(new CommunityView());
+            IsExecuteCMD = false;
         }
 
         private async void executeGotoCreateCMD()
         {
+            if (IsExecuteCMD == true)
+                return;
+            IsExecuteCMD = true;
             await Shell.Current.Navigation.PushModalAsync(new ListUserCreateView());
+            IsExecuteCMD = false;
         }
 
         private async void loadDta()
